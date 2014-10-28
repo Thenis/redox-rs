@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `src\rust-bt\tracker_udp.rs`.">
+    <meta name="description" content="Source to the Rust file `src/rust-bt/tracker_udp.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>tracker_udp.rs.html -- source</title>
@@ -260,10 +260,10 @@
             <span class='op'>*</span><span class='ident'>dst</span> <span class='op'>=</span> <span class='ident'>src</span>;
         }
         
-        <span class='comment'>// If too many net interfaces are found, it could be bad spawning a kernel thread for each of them</span>
+        <span class='comment'>// If too many net interfaces are found, it could be bad spawning a kernel thread for each of them</span>
         <span class='kw'>let</span> <span class='ident'>ip_addrs</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>util</span>::<span class='ident'>get_net_addrs</span>());
         <span class='kw'>let</span> (<span class='ident'>tx</span>, <span class='ident'>rx</span>) <span class='op'>=</span> <span class='ident'>channel</span>();
-        { <span class='comment'>// Need to move tx in scope so that it gets destroyed before receiving</span>
+        { <span class='comment'>// Need to move tx in scope so that it gets destroyed before receiving</span>
             <span class='kw'>let</span> <span class='ident'>tx</span> <span class='op'>=</span> <span class='ident'>tx</span>;
             <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='ident'>ip_addrs</span>.<span class='ident'>into_iter</span>() {
                 <span class='kw'>let</span> <span class='ident'>tx</span> <span class='op'>=</span> <span class='ident'>tx</span>.<span class='ident'>clone</span>();
@@ -322,12 +322,12 @@
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>send_bytes</span> <span class='op'>=</span> [<span class='number'>0u8</span>,..<span class='number'>16</span>];
         <span class='kw'>let</span> <span class='ident'>send_trans_id</span> <span class='op'>=</span> <span class='ident'>rand</span>::<span class='ident'>random</span>::<span class='op'>&lt;</span><span class='ident'>i32</span><span class='op'>&gt;</span>();
         
-        { <span class='comment'>// Limit Lifetime Of Writer Object</span>
+        { <span class='comment'>// Limit Lifetime Of Writer Object</span>
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>send_writer</span> <span class='op'>=</span> <span class='ident'>BufWriter</span>::<span class='ident'>new</span>(<span class='ident'>send_bytes</span>);
             
-            <span class='ident'>send_writer</span>.<span class='ident'>write_be_i64</span>(<span class='number'>0x41727101980</span>); <span class='comment'>// Part Of The Standard</span>
-            <span class='ident'>send_writer</span>.<span class='ident'>write_be_i32</span>(<span class='number'>0</span>); <span class='comment'>// Connect Request</span>
-            <span class='ident'>send_writer</span>.<span class='ident'>write_be_i32</span>(<span class='ident'>send_trans_id</span>); <span class='comment'>// Verify This In The Response</span>
+            <span class='ident'>send_writer</span>.<span class='ident'>write_be_i64</span>(<span class='number'>0x41727101980</span>); <span class='comment'>// Part Of The Standard</span>
+            <span class='ident'>send_writer</span>.<span class='ident'>write_be_i32</span>(<span class='number'>0</span>); <span class='comment'>// Connect Request</span>
+            <span class='ident'>send_writer</span>.<span class='ident'>write_be_i32</span>(<span class='ident'>send_trans_id</span>); <span class='comment'>// Verify This In The Response</span>
         }
         
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>recv_bytes</span> <span class='op'>=</span> [<span class='number'>0u8</span>,..<span class='number'>16</span>];
@@ -347,9 +347,9 @@
         <span class='ident'>recv_reader</span>.<span class='ident'>read_be_i64</span>()
     }
     
-    <span class='comment'>//fn scrape_request() -&gt; {</span>
+    <span class='comment'>//fn scrape_request() -&gt; {</span>
     
-    <span class='comment'>//}</span>
+    <span class='comment'>//}</span>
 }
 
 <span class='kw'>impl</span> <span class='ident'>Tracker</span> <span class='kw'>for</span> <span class='ident'>UdpTracker</span> {
@@ -367,19 +367,19 @@
         {
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>send_buf</span> <span class='op'>=</span> <span class='ident'>BufWriter</span>::<span class='ident'>new</span>(<span class='ident'>send_bytes</span>);
             
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='ident'>connect_id</span>); <span class='comment'>// Our Connection Id</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>1</span>); <span class='comment'>// This Is An Announce Request</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='ident'>send_trans_id</span>); <span class='comment'>// Random For Each Request</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write</span>(<span class='self'>self</span>.<span class='ident'>info_hash</span>); <span class='comment'>// Identifies The Torrent File</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write</span>(<span class='self'>self</span>.<span class='ident'>peer_id</span>); <span class='comment'>// Self Designated Peer Id</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='number'>0</span>); <span class='comment'>// Bytes Downloaded So Far</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='ident'>total_size</span> <span class='kw'>as</span> <span class='ident'>i64</span>); <span class='comment'>// Bytes Needed</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='number'>0</span>); <span class='comment'>// Bytes Uploaded So Far</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>0</span>); <span class='comment'>// Specific Event</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>0</span>); <span class='comment'>// IPv4 Address (0 For Source Address)</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>12</span>); <span class='comment'>// Key (Helps With Endianness For Tracker?)</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='op'>-</span><span class='number'>1</span>); <span class='comment'>// Number Of Clients To Return (-1 Default)</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i16</span>(<span class='number'>6882</span>); <span class='comment'>// Port For Other Clients To Connect (Needs To Be Port Forwarded Behind NAT)</span>
+            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='ident'>connect_id</span>); <span class='comment'>// Our Connection Id</span>
+            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>1</span>); <span class='comment'>// This Is An Announce Request</span>
+            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='ident'>send_trans_id</span>); <span class='comment'>// Random For Each Request</span>
+            <span class='ident'>send_buf</span>.<span class='ident'>write</span>(<span class='self'>self</span>.<span class='ident'>info_hash</span>); <span class='comment'>// Identifies The Torrent File</span>
+            <span class='ident'>send_buf</span>.<span class='ident'>write</span>(<span class='self'>self</span>.<span class='ident'>peer_id</span>); <span class='comment'>// Self Designated Peer Id</span>
+            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='number'>0</span>); <span class='comment'>// Bytes Downloaded So Far</span>
+            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='ident'>total_size</span> <span class='kw'>as</span> <span class='ident'>i64</span>); <span class='comment'>// Bytes Needed</span>
+            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='number'>0</span>); <span class='comment'>// Bytes Uploaded So Far</span>
+            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>0</span>); <span class='comment'>// Specific Event</span>
+            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>0</span>); <span class='comment'>// IPv4 Address (0 For Source Address)</span>
+            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>12</span>); <span class='comment'>// Key (Helps With Endianness For Tracker?)</span>
+            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='op'>-</span><span class='number'>1</span>); <span class='comment'>// Number Of Clients To Return (-1 Default)</span>
+            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i16</span>(<span class='number'>6882</span>); <span class='comment'>// Port For Other Clients To Connect (Needs To Be Port Forwarded Behind NAT)</span>
         }
         
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>recv_bytes</span> <span class='op'>=</span> [<span class='number'>0u8</span>,..<span class='number'>10000</span>];

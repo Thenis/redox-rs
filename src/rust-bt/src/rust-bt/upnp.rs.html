@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `src\rust-bt\upnp.rs`.">
+    <meta name="description" content="Source to the Rust file `src/rust-bt/upnp.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>upnp.rs.html -- source</title>
@@ -489,47 +489,6 @@
 <span id='447'>447</span>
 <span id='448'>448</span>
 <span id='449'>449</span>
-<span id='450'>450</span>
-<span id='451'>451</span>
-<span id='452'>452</span>
-<span id='453'>453</span>
-<span id='454'>454</span>
-<span id='455'>455</span>
-<span id='456'>456</span>
-<span id='457'>457</span>
-<span id='458'>458</span>
-<span id='459'>459</span>
-<span id='460'>460</span>
-<span id='461'>461</span>
-<span id='462'>462</span>
-<span id='463'>463</span>
-<span id='464'>464</span>
-<span id='465'>465</span>
-<span id='466'>466</span>
-<span id='467'>467</span>
-<span id='468'>468</span>
-<span id='469'>469</span>
-<span id='470'>470</span>
-<span id='471'>471</span>
-<span id='472'>472</span>
-<span id='473'>473</span>
-<span id='474'>474</span>
-<span id='475'>475</span>
-<span id='476'>476</span>
-<span id='477'>477</span>
-<span id='478'>478</span>
-<span id='479'>479</span>
-<span id='480'>480</span>
-<span id='481'>481</span>
-<span id='482'>482</span>
-<span id='483'>483</span>
-<span id='484'>484</span>
-<span id='485'>485</span>
-<span id='486'>486</span>
-<span id='487'>487</span>
-<span id='488'>488</span>
-<span id='489'>489</span>
-<span id='490'>490</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>util</span>;
 <span class='kw'>use</span> <span class='ident'>regex</span>::<span class='ident'>Regex</span>;
@@ -538,25 +497,24 @@
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::{<span class='ident'>IoResult</span>, <span class='ident'>InvalidInput</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>udp</span>::<span class='ident'>UdpSocket</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>ip</span>::{<span class='ident'>SocketAddr</span>, <span class='ident'>Ipv4Addr</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>File</span>;
 
-<span class='comment'>// http://upnp.org/sdcps-and-certification/standards/sdcps/</span>
-<span class='comment'>// http://www.upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0-20080424.pdf</span>
+<span class='doccomment'>/// http://upnp.org/sdcps-and-certification/standards/sdcps/</span>
+<span class='doccomment'>/// http://www.upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.0-20080424.pdf</span>
 
-<span class='comment'>// {1} = Device Max Wait Period, {2} = Search Target</span>
+<span class='doccomment'>/// {1} = Device Max Wait Period, {2} = Search Target</span>
 <span class='kw'>static</span> <span class='ident'>DISCOVERY_ADDR</span>: <span class='ident'>SocketAddr</span> <span class='op'>=</span> <span class='ident'>SocketAddr</span>{ <span class='ident'>ip</span>: <span class='ident'>Ipv4Addr</span>(<span class='number'>239</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>250</span>), <span class='ident'>port</span>: <span class='number'>1900</span> };
-<span class='kw'>static</span> <span class='ident'>GENERIC_SEARCH_REQUEST</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span> <span class='op'>=</span> <span class='string'>&quot;M-SEARCH * HTTP/1.1\r
+<span class='kw'>static</span> <span class='ident'>GENERIC_SEARCH</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span> <span class='op'>=</span> <span class='string'>&quot;M-SEARCH * HTTP/1.1\r
 HOST: 239.255.255.250:1900\r
 MAN: \&quot;ssdp:discover\&quot;\r
 MX: {1}\r
 ST: {2}\r\n\r\n&quot;</span>;
 
-<span class='comment'>// {1} = Path, {2} = IP Address:Port</span>
+<span class='doccomment'>/// {1} = Path, {2} = IP Address:Port</span>
 <span class='kw'>static</span> <span class='ident'>GENERIC_HTTP_REQUEST</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span> <span class='op'>=</span> <span class='string'>&quot;GET {1} HTTP/1.1\r
 Host: {2}\r\n\r\n&quot;</span>;
 
-<span class='comment'>// {1} = Control URL, {2} = IP Address:Port, {3} = Bytes In Payload,</span>
-<span class='comment'>// {4} = Search Target Of Service, {5} = Action Name, {6} = Action Parameters</span>
+<span class='doccomment'>/// {1} = Control URL, {2} = IP Address:Port, {3} = Bytes In Payload,</span>
+<span class='doccomment'>/// {4} = Search Target Of Service, {5} = Action Name, {6} = Action Parameters</span>
 <span class='kw'>static</span> <span class='ident'>GENERIC_SOAP_REQUEST</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span> <span class='op'>=</span> <span class='string'>&quot;POST {1} HTTP/1.1\r
 HOST: {2}\r
 CONTENT-LENGTH: {3}\r
@@ -567,22 +525,17 @@ SOAPACTION: \&quot;{4}#{5}\&quot;\r
 &lt;s:Envelope xmlns:s=\&quot;http://schemas.xmlsoap.org/soap/envelope/\&quot;
 s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
     &lt;s:Body&gt;
-        &lt;u:{5} xmlns:u=\&quot;{4}\&quot;&gt;{6}&lt;/u:{5}&gt;
+        &lt;u:{5} xmlns:u=\&quot;{4}\&quot;&gt;
+            {6}
+        &lt;/u:{5}&gt;
     &lt;/s:Body&gt;
 &lt;/s:Envelope&gt;&quot;</span>;
-<span class='comment'>// Does Not Include Replacement Identifiers Or Quote Escapes</span>
-<span class='kw'>static</span> <span class='ident'>BASE_CONTENT_LENGTH</span>: <span class='ident'>uint</span> <span class='op'>=</span> <span class='number'>222</span>;
+<span class='kw'>static</span> <span class='ident'>BASE_CONTENT_LENGTH</span>: <span class='ident'>uint</span> <span class='op'>=</span> <span class='number'>254</span>; <span class='comment'>// Does Not Include Replacement Identifiers</span>
 
-<span class='comment'>// UPnPInterface Classifiers</span>
 <span class='kw'>static</span> <span class='ident'>ROOT_REGEX</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;upnp:(rootdevice)&quot;</span>);
-<span class='kw'>static</span> <span class='ident'>DEVICE_REGEX</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;:device:(.+?):(\d+)&quot;</span>);
-<span class='kw'>static</span> <span class='ident'>SERVICE_REGEX</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;:service:(.+?):(\d+)&quot;</span>);
+<span class='kw'>static</span> <span class='ident'>DEVICE_REGEX</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;:device:(.*?):(\d+)&quot;</span>);
+<span class='kw'>static</span> <span class='ident'>SERVICE_REGEX</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;:service:(.*?):(\d+)&quot;</span>);
 <span class='kw'>static</span> <span class='ident'>IDENTIFIER_REGEX</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;uuid:([\w\d-]+)&quot;</span>);
-
-<span class='comment'>// Case Insensitive Matches For Header Fields</span>
-<span class='kw'>static</span> <span class='ident'>ST_REGEX</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;(?i)ST: *([^\r\n]+)&quot;</span>);
-<span class='kw'>static</span> <span class='ident'>USN_REGEX</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;(?i)USN: *([^\r\n]+)&quot;</span>);
-<span class='kw'>static</span> <span class='ident'>LOCATION_REGEX</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;(?i)Location: *([^\r\n]+)&quot;</span>);
 
 <span class='doccomment'>/// A tuple consisting of start and end position.</span>
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>StrPos</span> <span class='op'>=</span> (<span class='ident'>uint</span>, <span class='ident'>uint</span>);
@@ -604,25 +557,25 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// This is a blocking operation.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>parse</span>(<span class='ident'>location</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>st</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>ServiceDesc</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Setup Regex For Parsing Device Description Page</span>
+        <span class='comment'>// Setup Regex For Parsing Device Description Page</span>
         <span class='kw'>let</span> <span class='ident'>service_find</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>from_str</span>(<span class='string'>&quot;&lt;service&gt;\\s*?&lt;serviceType&gt;{1}&lt;/serviceType&gt;(?:.|\n)+?&lt;/service&gt;&quot;</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{1}&quot;</span>, <span class='ident'>st</span>);
         <span class='kw'>let</span> <span class='ident'>service_regex</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>Regex</span>::<span class='ident'>new</span>(<span class='ident'>service_find</span>.<span class='ident'>as_slice</span>()).<span class='ident'>or_else</span>( <span class='op'>|</span>_<span class='op'>|</span>
             <span class='prelude-val'>Err</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;Failed To Create Service Regex&quot;</span>))
         ));
-        <span class='kw'>let</span> <span class='ident'>scpd_find</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;&lt;SCPDURL&gt;(.+?)&lt;/SCPDURL&gt;&quot;</span>);
-        <span class='kw'>let</span> <span class='ident'>control_find</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;&lt;controlURL&gt;(.+?)&lt;/controlURL&gt;&quot;</span>);
+        <span class='kw'>let</span> <span class='ident'>scpd_find</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;&lt;SCPDURL&gt;(.*?)&lt;/SCPDURL&gt;&quot;</span>);
+        <span class='kw'>let</span> <span class='ident'>control_find</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;&lt;controlURL&gt;(.*?)&lt;/controlURL&gt;&quot;</span>);
         
-        <span class='comment'>// Setup Regex For Parsing Service Description Page</span>
+        <span class='comment'>// Setup Regex For Parsing Service Description Page</span>
         <span class='kw'>let</span> <span class='ident'>action_regex</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;&lt;action&gt;(?:.|\n)+?&lt;/action&gt;&quot;</span>);
         <span class='kw'>let</span> <span class='ident'>state_vars_regex</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;&lt;serviceStateTable&gt;(?:.|\n)+?&lt;/serviceStateTable&gt;&quot;</span>);
         
-        <span class='comment'>// Setup Data To Query Device Description Page</span>
+        <span class='comment'>// Setup Data To Query Device Description Page</span>
         <span class='kw'>let</span> <span class='ident'>path</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>util</span>::<span class='ident'>get_path</span>(<span class='ident'>location</span>));
         <span class='kw'>let</span> <span class='ident'>sock_addr</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>util</span>::<span class='ident'>get_sockaddr</span>(<span class='ident'>location</span>));
         <span class='kw'>let</span> <span class='ident'>request</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>from_str</span>(<span class='ident'>GENERIC_HTTP_REQUEST</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{1}&quot;</span>, <span class='ident'>path</span>)
             .<span class='ident'>replace</span>(<span class='string'>&quot;{2}&quot;</span>, <span class='ident'>sock_addr</span>.<span class='ident'>to_string</span>().<span class='ident'>as_slice</span>());
 
-        <span class='comment'>// Query Device Description Page</span>
+        <span class='comment'>// Query Device Description Page</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>tcp_sock</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>TcpStream</span>::<span class='ident'>connect</span>(<span class='ident'>sock_addr</span>.<span class='ident'>ip</span>.<span class='ident'>to_string</span>().<span class='ident'>as_slice</span>(), <span class='ident'>sock_addr</span>.<span class='ident'>port</span>));
         
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>tcp_sock</span>.<span class='ident'>write_str</span>(<span class='ident'>request</span>.<span class='ident'>as_slice</span>()));
@@ -632,7 +585,7 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
             <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;Could Not Find Service Tag&quot;</span>)
         ));
 
-        <span class='comment'>// Pull Service Description Path And Control Path</span>
+        <span class='comment'>// Pull Service Description Path And Control Path</span>
         <span class='kw'>let</span> <span class='ident'>service_tag</span> <span class='op'>=</span> <span class='ident'>response</span>.<span class='ident'>as_slice</span>().<span class='ident'>slice</span>(<span class='ident'>tag_begin</span>, <span class='ident'>tag_end</span>);
         
         <span class='kw'>let</span> <span class='ident'>scpd_path</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>scpd_find</span>.<span class='ident'>captures</span>(<span class='ident'>service_tag</span>).<span class='ident'>ok_or</span>(
@@ -642,14 +595,14 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
             <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;Could Not Capture Control Path&quot;</span>)
         )).<span class='ident'>at</span>(<span class='number'>1</span>);
         
-        <span class='comment'>// Query Service Description</span>
+        <span class='comment'>// Query Service Description</span>
         <span class='ident'>tcp_sock</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>TcpStream</span>::<span class='ident'>connect</span>(<span class='ident'>sock_addr</span>.<span class='ident'>ip</span>.<span class='ident'>to_string</span>().<span class='ident'>as_slice</span>(), <span class='ident'>sock_addr</span>.<span class='ident'>port</span>));
         <span class='kw'>let</span> <span class='ident'>request</span> <span class='op'>=</span> <span class='ident'>request</span>.<span class='ident'>replace</span>(<span class='ident'>path</span>.<span class='ident'>as_slice</span>(), <span class='ident'>scpd_path</span>);
 
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>tcp_sock</span>.<span class='ident'>write_str</span>(<span class='ident'>request</span>.<span class='ident'>as_slice</span>()));
         <span class='kw'>let</span> <span class='ident'>response</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>tcp_sock</span>.<span class='ident'>read_to_string</span>());
         
-        <span class='comment'>// Pull Out Actions And State Variable Table Locations</span>
+        <span class='comment'>// Pull Out Actions And State Variable Table Locations</span>
         <span class='kw'>let</span> <span class='ident'>actions</span> <span class='op'>=</span> <span class='ident'>action_regex</span>.<span class='ident'>find_iter</span>(<span class='ident'>response</span>.<span class='ident'>as_slice</span>()).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>uint</span>, <span class='ident'>uint</span>)<span class='op'>&gt;&gt;</span>();
         <span class='kw'>let</span> <span class='ident'>var_table</span> <span class='op'>=</span> <span class='ident'>state_vars_regex</span>.<span class='ident'>find</span>(<span class='ident'>response</span>.<span class='ident'>as_slice</span>());
         
@@ -658,44 +611,9 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
             <span class='ident'>actions</span>: <span class='ident'>actions</span>, <span class='ident'>var_table</span>: <span class='ident'>var_table</span> })
     }
     
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>soap_request</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>action</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>params</span>: <span class='kw-2'>&amp;</span>[(<span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='kw-2'>&amp;</span><span class='ident'>str</span>)]) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> {
-        <span class='comment'>// Build Parameter Section Of Payload</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>arguments</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>from_str</span>(<span class='string'>&quot;&quot;</span>);
+    <span class='comment'>//pub fn soap_request(action: &amp;str, ) -&gt; IoResult&lt;&gt; {</span>
         
-        <span class='kw'>for</span> <span class='kw-2'>&amp;</span>(<span class='ident'>tag</span>, <span class='ident'>value</span>) <span class='kw'>in</span> <span class='ident'>params</span>.<span class='ident'>iter</span>() {
-            <span class='ident'>arguments</span>.<span class='ident'>push_str</span>(<span class='string'>&quot;&lt;&quot;</span>);
-            <span class='ident'>arguments</span>.<span class='ident'>push_str</span>(<span class='ident'>tag</span>);
-            <span class='ident'>arguments</span>.<span class='ident'>push_str</span>(<span class='string'>&quot;&gt;&quot;</span>);
-            
-            <span class='ident'>arguments</span>.<span class='ident'>push_str</span>(<span class='ident'>value</span>);
-            
-            <span class='ident'>arguments</span>.<span class='ident'>push_str</span>(<span class='string'>&quot;&lt;/&quot;</span>);
-            <span class='ident'>arguments</span>.<span class='ident'>push_str</span>(<span class='ident'>tag</span>);
-            <span class='ident'>arguments</span>.<span class='ident'>push_str</span>(<span class='string'>&quot;&gt;&quot;</span>);
-        }
-        
-        <span class='comment'>// Substitute In Parameters</span>
-        <span class='kw'>let</span> <span class='ident'>content_len</span> <span class='op'>=</span> <span class='ident'>BASE_CONTENT_LENGTH</span> <span class='op'>+</span> <span class='ident'>arguments</span>.<span class='ident'>len</span>() <span class='op'>+</span> 
-            (<span class='ident'>action</span>.<span class='ident'>len</span>() <span class='op'>*</span> <span class='number'>2</span>) <span class='op'>+</span> <span class='self'>self</span>.<span class='ident'>search_target</span>.<span class='ident'>len</span>();
-        <span class='kw'>let</span> <span class='ident'>request</span> <span class='op'>=</span> <span class='ident'>GENERIC_SOAP_REQUEST</span>.<span class='ident'>replace</span>(<span class='string'>&quot;{1}&quot;</span>, <span class='self'>self</span>.<span class='ident'>control_path</span>.<span class='ident'>as_slice</span>())
-            .<span class='ident'>replace</span>(<span class='string'>&quot;{2}&quot;</span>, <span class='self'>self</span>.<span class='ident'>location</span>.<span class='ident'>to_string</span>().<span class='ident'>as_slice</span>())
-            .<span class='ident'>replace</span>(<span class='string'>&quot;{3}&quot;</span>, <span class='ident'>content_len</span>.<span class='ident'>to_string</span>().<span class='ident'>as_slice</span>())
-            .<span class='ident'>replace</span>(<span class='string'>&quot;{4}&quot;</span>, <span class='self'>self</span>.<span class='ident'>search_target</span>.<span class='ident'>as_slice</span>())
-            .<span class='ident'>replace</span>(<span class='string'>&quot;{5}&quot;</span>, <span class='ident'>action</span>)
-            .<span class='ident'>replace</span>(<span class='string'>&quot;{6}&quot;</span>, <span class='ident'>arguments</span>.<span class='ident'>as_slice</span>());
-            <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{}&quot;</span>, <span class='ident'>request</span>);
-            <span class='kw'>let</span> <span class='ident'>request</span> <span class='op'>=</span> <span class='ident'>File</span>::<span class='ident'>open</span>(<span class='kw-2'>&amp;</span><span class='ident'>Path</span>::<span class='ident'>new</span>(<span class='string'>&quot;spike/data.txt&quot;</span>)).<span class='ident'>read_to_string</span>();
-        <span class='comment'>// Send Request</span>
-        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{}&quot;</span>, <span class='ident'>request</span>);
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>tcp_sock</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>TcpStream</span>::<span class='ident'>connect</span>(<span class='string'>&quot;192.168.1.1&quot;</span>, <span class='number'>1780</span>));
-        
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>tcp_sock</span>.<span class='ident'>write_str</span>(<span class='ident'>request</span>.<span class='ident'>unwrap</span>().<span class='ident'>as_slice</span>()));
-        <span class='kw'>let</span> <span class='ident'>response</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>tcp_sock</span>.<span class='ident'>read_to_string</span>());
-        
-        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{}&quot;</span>, <span class='ident'>response</span>.<span class='ident'>len</span>());
-        
-        <span class='prelude-val'>Ok</span>(())
-    }
+    <span class='comment'>//}</span>
 }
 
 <span class='doccomment'>/// Type used to represent different interfaces available on a network as defined </span>
@@ -713,7 +631,7 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// This is a blocking operation.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>find_all</span>(<span class='ident'>from_addr</span>: <span class='ident'>SocketAddr</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>UPnPInterface</span><span class='op'>&gt;&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>request</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>from_str</span>(<span class='ident'>GENERIC_SEARCH_REQUEST</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{1}&quot;</span>, <span class='string'>&quot;5&quot;</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{2}&quot;</span>, <span class='string'>&quot;ssdp:all&quot;</span>);
+        <span class='kw'>let</span> <span class='ident'>request</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>from_str</span>(<span class='ident'>GENERIC_SEARCH</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{1}&quot;</span>, <span class='string'>&quot;5&quot;</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{2}&quot;</span>, <span class='string'>&quot;ssdp:all&quot;</span>);
         <span class='kw'>let</span> <span class='ident'>replies</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_search</span>(<span class='ident'>from_addr</span>, <span class='number'>5500</span>, <span class='ident'>request</span>.<span class='ident'>as_slice</span>()));
         
         <span class='ident'>parse_interfaces</span>(<span class='ident'>replies</span>)
@@ -723,14 +641,12 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// This function does not check to make sure that only services responded</span>
     <span class='doccomment'>/// to our request, so it is assumed that devices on the network correctly</span>
-    <span class='doccomment'>/// follow the UPnP specification. As of now, any services that are not defined</span>
-    <span class='doccomment'>/// at http://upnp.org/sdcps-and-certification/standards/sdcps/ will not be found</span>
-    <span class='doccomment'>/// by this method (use find_all and filter with is_service).</span>
+    <span class='doccomment'>/// follow the UPnP specification. </span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// This is a blocking operation.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>find_services</span>(<span class='ident'>from_addr</span>: <span class='ident'>SocketAddr</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>version</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>UPnPInterface</span><span class='op'>&gt;&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>service_st</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>from_str</span>(<span class='string'>&quot;urn:schemas-upnp-org:service:{1}:{2}&quot;</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{1}&quot;</span>, <span class='ident'>name</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{2}&quot;</span>, <span class='ident'>version</span>);
-        <span class='kw'>let</span> <span class='ident'>request</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>from_str</span>(<span class='ident'>GENERIC_SEARCH_REQUEST</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{1}&quot;</span>, <span class='string'>&quot;5&quot;</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{2}&quot;</span>, <span class='ident'>service_st</span>.<span class='ident'>as_slice</span>());
+        <span class='kw'>let</span> <span class='ident'>request</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>from_str</span>(<span class='ident'>GENERIC_SEARCH</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{1}&quot;</span>, <span class='string'>&quot;5&quot;</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{2}&quot;</span>, <span class='ident'>service_st</span>.<span class='ident'>as_slice</span>());
         
         <span class='kw'>let</span> <span class='ident'>replies</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_search</span>(<span class='ident'>from_addr</span>, <span class='number'>5500</span>, <span class='ident'>request</span>.<span class='ident'>as_slice</span>()));
         
@@ -741,14 +657,12 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// This function does not check to make sure that only devices responded</span>
     <span class='doccomment'>/// to our request, so it is assumed that devices on the network correctly</span>
-    <span class='doccomment'>/// follow the UPnP specification. As of now, any devices that are not defined</span>
-    <span class='doccomment'>/// at http://upnp.org/sdcps-and-certification/standards/sdcps/ will not be found</span>
-    <span class='doccomment'>/// by this method (use find_all and filter with is_device).</span>
+    <span class='doccomment'>/// follow the UPnP specification. </span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// This is a blocking operation.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>find_devices</span>(<span class='ident'>from_addr</span>: <span class='ident'>SocketAddr</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>version</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>UPnPInterface</span><span class='op'>&gt;&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>device_st</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>from_str</span>(<span class='string'>&quot;urn:schemas-upnp-org:device:{1}:{2}&quot;</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{1}&quot;</span>, <span class='ident'>name</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{2}&quot;</span>, <span class='ident'>version</span>);
-        <span class='kw'>let</span> <span class='ident'>request</span> <span class='op'>=</span> <span class='ident'>GENERIC_SEARCH_REQUEST</span>.<span class='ident'>replace</span>(<span class='string'>&quot;{1}&quot;</span>, <span class='string'>&quot;5&quot;</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{2}&quot;</span>, <span class='ident'>device_st</span>.<span class='ident'>as_slice</span>());
+        <span class='kw'>let</span> <span class='ident'>request</span> <span class='op'>=</span> <span class='ident'>GENERIC_SEARCH</span>.<span class='ident'>replace</span>(<span class='string'>&quot;{1}&quot;</span>, <span class='string'>&quot;5&quot;</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{2}&quot;</span>, <span class='ident'>device_st</span>.<span class='ident'>as_slice</span>());
         
         <span class='kw'>let</span> <span class='ident'>replies</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_search</span>(<span class='ident'>from_addr</span>, <span class='number'>5500</span>, <span class='ident'>request</span>.<span class='ident'>as_slice</span>()));
         
@@ -764,7 +678,7 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
     <span class='doccomment'>/// This is a blocking operation.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>find_uuid</span>(<span class='ident'>from_addr</span>: <span class='ident'>SocketAddr</span>, <span class='ident'>uuid</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>UPnPInterface</span><span class='op'>&gt;&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>uuid_st</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>from_str</span>(<span class='string'>&quot;uuid:{1}&quot;</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{1}&quot;</span>, <span class='ident'>uuid</span>);
-        <span class='kw'>let</span> <span class='ident'>request</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>from_str</span>(<span class='ident'>GENERIC_SEARCH_REQUEST</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{1}&quot;</span>, <span class='string'>&quot;5&quot;</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{2}&quot;</span>, <span class='ident'>uuid_st</span>.<span class='ident'>as_slice</span>());
+        <span class='kw'>let</span> <span class='ident'>request</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>from_str</span>(<span class='ident'>GENERIC_SEARCH</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{1}&quot;</span>, <span class='string'>&quot;5&quot;</span>).<span class='ident'>replace</span>(<span class='string'>&quot;{2}&quot;</span>, <span class='ident'>uuid_st</span>.<span class='ident'>as_slice</span>());
             
         <span class='kw'>let</span> <span class='ident'>replies</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_search</span>(<span class='ident'>from_addr</span>, <span class='number'>5500</span>, <span class='ident'>request</span>.<span class='ident'>as_slice</span>()));
             
@@ -892,34 +806,38 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
     <span class='doccomment'>/// object that is of type service.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// This is a blocking operation.</span>
-    <span class='comment'>//pub fn service_descs(&amp;self) -&gt; IoResult&lt;Vec&lt;ServiceDesc&gt;&gt; {</span>
+    <span class='comment'>//pub fn service_descs(&amp;self) -&gt; IoResult&lt;Vec&lt;ServiceDesc&gt;&gt; {</span>
         
-    <span class='comment'>//}</span>
+    <span class='comment'>//}</span>
 }
 
 <span class='doccomment'>/// Takes ownership of a vector of String objects that correspond to M-Search respones</span>
 <span class='doccomment'>/// and generates a vector of UPnPInterface objects. Each String object corresponds</span>
 <span class='doccomment'>/// to one UPnPInterface object.</span>
 <span class='kw'>fn</span> <span class='ident'>parse_interfaces</span>(<span class='ident'>payloads</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>UPnPInterface</span><span class='op'>&gt;&gt;</span> {
+    <span class='kw'>let</span> <span class='ident'>st_regex</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;ST: *([^\r\n]+)&quot;</span>);
+    <span class='kw'>let</span> <span class='ident'>usn_regex</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;USN: *([^\r\n]+)&quot;</span>);
+    <span class='kw'>let</span> <span class='ident'>location_regex</span>: <span class='ident'>Regex</span> <span class='op'>=</span> <span class='macro'>regex</span><span class='macro'>!</span>(<span class='string'>r&quot;Location: *([^\r\n]+)&quot;</span>);
+    
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>interfaces</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>UPnPInterface</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>new</span>();
     
     <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='ident'>payloads</span>.<span class='ident'>into_iter</span>() {
-        <span class='kw'>let</span> <span class='ident'>usn</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>USN_REGEX</span>.<span class='ident'>captures</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>()).<span class='ident'>ok_or</span>(
+        <span class='kw'>let</span> <span class='ident'>usn</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>usn_regex</span>.<span class='ident'>captures</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>()).<span class='ident'>ok_or</span>(
             <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;USN Match Failed&quot;</span>)
         )).<span class='ident'>pos</span>(<span class='number'>1</span>).<span class='ident'>ok_or</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;USN Field Missing&quot;</span>)));
         
-        <span class='kw'>let</span> <span class='ident'>st</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>ST_REGEX</span>.<span class='ident'>captures</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>()).<span class='ident'>ok_or</span>(
+        <span class='kw'>let</span> <span class='ident'>st</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>st_regex</span>.<span class='ident'>captures</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>()).<span class='ident'>ok_or</span>(
             <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;ST Match Failed&quot;</span>)
         )).<span class='ident'>pos</span>(<span class='number'>1</span>).<span class='ident'>ok_or</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;ST Field Missing&quot;</span>)));
         
-        <span class='kw'>let</span> <span class='ident'>location</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>LOCATION_REGEX</span>.<span class='ident'>captures</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>()).<span class='ident'>ok_or</span>(
+        <span class='kw'>let</span> <span class='ident'>location</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>location_regex</span>.<span class='ident'>captures</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>()).<span class='ident'>ok_or</span>(
             <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;Location Match Failed&quot;</span>)
         )).<span class='ident'>pos</span>(<span class='number'>1</span>).<span class='ident'>ok_or</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;Location Field Missing&quot;</span>)));
         
         <span class='kw'>if</span> (<span class='ident'>SERVICE_REGEX</span>.<span class='ident'>is_match</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>())) {
             <span class='kw'>let</span> (<span class='ident'>name</span>, <span class='ident'>version</span>): (<span class='ident'>StrPos</span>, <span class='ident'>StrPos</span>);
 
-            { <span class='comment'>// Scope Borrow Of i In captures</span>
+            { <span class='comment'>// Scope Borrow Of i In captures</span>
                 <span class='kw'>let</span> <span class='ident'>captures</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>SERVICE_REGEX</span>.<span class='ident'>captures</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>()).<span class='ident'>ok_or</span>(
                    <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;Service Match Failed&quot;</span>) 
                 ));
@@ -936,7 +854,7 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
         } <span class='kw'>else</span> <span class='kw'>if</span> (<span class='ident'>DEVICE_REGEX</span>.<span class='ident'>is_match</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>())) {
             <span class='kw'>let</span> (<span class='ident'>name</span>, <span class='ident'>version</span>): (<span class='ident'>StrPos</span>, <span class='ident'>StrPos</span>);
             
-            { <span class='comment'>// Scope Borrow Of i In captures</span>
+            { <span class='comment'>// Scope Borrow Of i In captures</span>
                 <span class='kw'>let</span> <span class='ident'>captures</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>DEVICE_REGEX</span>.<span class='ident'>captures</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>()).<span class='ident'>ok_or</span>(
                    <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;Device Match Failed&quot;</span>) 
                 ));
@@ -950,10 +868,10 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
             }
         
             <span class='ident'>interfaces</span>.<span class='ident'>push</span>(<span class='ident'>Device</span>(<span class='ident'>i</span>, <span class='ident'>name</span>, <span class='ident'>version</span>, <span class='ident'>location</span>, <span class='ident'>st</span>, <span class='ident'>usn</span>));
-        } <span class='kw'>else</span> <span class='kw'>if</span> (<span class='ident'>ROOT_REGEX</span>.<span class='ident'>is_match</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>())) { <span class='comment'>// This HAS To Be Checked Before Identifier</span>
+        } <span class='kw'>else</span> <span class='kw'>if</span> (<span class='ident'>ROOT_REGEX</span>.<span class='ident'>is_match</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>())) { <span class='comment'>// This HAS To Be Checked Before Identifier</span>
             <span class='kw'>let</span> <span class='ident'>name</span>: <span class='ident'>StrPos</span>;
             
-            { <span class='comment'>// Scope Borrow Of i In captures</span>
+            { <span class='comment'>// Scope Borrow Of i In captures</span>
                 <span class='kw'>let</span> <span class='ident'>captures</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>ROOT_REGEX</span>.<span class='ident'>captures</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>()).<span class='ident'>ok_or</span>(
                    <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;Root Match Failed&quot;</span>) 
                 ));
@@ -967,7 +885,7 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
         } <span class='kw'>else</span> <span class='kw'>if</span> (<span class='ident'>IDENTIFIER_REGEX</span>.<span class='ident'>is_match</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>())) {
             <span class='kw'>let</span> <span class='ident'>name</span>: <span class='ident'>StrPos</span>;
             
-            { <span class='comment'>// Scope Borrow Of i In captures</span>
+            { <span class='comment'>// Scope Borrow Of i In captures</span>
                 <span class='kw'>let</span> <span class='ident'>captures</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>IDENTIFIER_REGEX</span>.<span class='ident'>captures</span>(<span class='ident'>i</span>.<span class='ident'>as_slice</span>()).<span class='ident'>ok_or</span>(
                    <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;Identifier Match Failed&quot;</span>) 
                 ));
@@ -978,7 +896,7 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
             }
         
             <span class='ident'>interfaces</span>.<span class='ident'>push</span>(<span class='ident'>Identifier</span>(<span class='ident'>i</span>, <span class='ident'>name</span>, (<span class='number'>0</span>, <span class='number'>0</span>), <span class='ident'>location</span>, <span class='ident'>st</span>, <span class='ident'>usn</span>));
-        }  <span class='comment'>// Ignore Any Other (Invalid) ST Identifiers</span>
+        }  <span class='comment'>// Ignore Any Other (Invalid) ST Identifiers</span>
     }
     
     <span class='prelude-val'>Ok</span>(<span class='ident'>interfaces</span>)
@@ -990,9 +908,9 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
 <span class='doccomment'>/// Note that for larger networks you will want to increase the timeout value. However,</span>
 <span class='doccomment'>/// you will also want to scale the MX field accordingly so that replies are not dropped </span>
 <span class='doccomment'>/// because of a flood of UDP packets either on the local interface or local router.</span>
-<span class='comment'>// TODO: Make this more robust by stuffing the text into the current String object</span>
-<span class='comment'>// until the \r\n\r\n is reached (this could span multiple receive requests) in case</span>
-<span class='comment'>// our static buffer is not big enough (rare case).</span>
+<span class='comment'>// TODO: Make this more robust by stuffing the text into the current String object</span>
+<span class='comment'>// until the \r\n\r\n is reached (this could span multiple receive requests) in case</span>
+<span class='comment'>// our static buffer is not big enough (rare case).</span>
 <span class='kw'>fn</span> <span class='ident'>send_search</span>(<span class='ident'>from_addr</span>: <span class='ident'>SocketAddr</span>, <span class='ident'>timeout</span>: <span class='ident'>uint</span>, <span class='ident'>request</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;&gt;</span> {
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>udp_sock</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>UdpSocket</span>::<span class='ident'>bind</span>(<span class='ident'>from_addr</span>));
     

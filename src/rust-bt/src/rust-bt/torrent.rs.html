@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `src\rust-bt\torrent.rs`.">
+    <meta name="description" content="Source to the Rust file `src/rust-bt/torrent.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>torrent.rs.html -- source</title>
@@ -314,8 +314,8 @@
             _ <span class='op'>=&gt;</span> { <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;announce Key Not In ben_torr&quot;</span>)) }
         };
         
-        <span class='comment'>// The Announce List Is Going To Be A 2D List, Each Inner List Is A </span>
-        <span class='comment'>// &quot;Tier&quot; [[backup1, backup2], [backup3], [backup4, backup5]]</span>
+        <span class='comment'>// The Announce List Is Going To Be A 2D List, Each Inner List Is A </span>
+        <span class='comment'>// &quot;Tier&quot; [[backup1, backup2], [backup3], [backup4, backup5]]</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>announce_list</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>str</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='ident'>Vec</span>::<span class='ident'>new</span>());
         <span class='kw'>match</span> <span class='ident'>torr_dict</span>.<span class='ident'>find_equiv</span>(<span class='kw-2'>&amp;</span><span class='string'>&quot;announce-list&quot;</span>) {
             <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>List</span>(<span class='kw-2'>ref</span> <span class='ident'>n</span>)) <span class='op'>=&gt;</span> {
@@ -329,7 +329,7 @@
                             <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;tier_str Is Not A String Value&quot;</span>)
                         ));
 
-                        <span class='comment'>// announce_list Will ALWAYS Be Some At This Point</span>
+                        <span class='comment'>// announce_list Will ALWAYS Be Some At This Point</span>
                         <span class='ident'>announce_list</span>.<span class='ident'>as_mut</span>().<span class='ident'>unwrap</span>().<span class='ident'>push</span>(<span class='ident'>tier_str</span>);
                     }
                 }
@@ -337,11 +337,11 @@
             _ <span class='op'>=&gt;</span> { <span class='ident'>announce_list</span> <span class='op'>=</span> <span class='prelude-val'>None</span> }
         };
         
-        <span class='comment'>// In Case Torrent File Had An Empty Announce-List</span>
+        <span class='comment'>// In Case Torrent File Had An Empty Announce-List</span>
         <span class='kw'>if</span> (<span class='ident'>announce_list</span>.<span class='ident'>is_some</span>() <span class='op'>&amp;&amp;</span> <span class='ident'>announce_list</span>.<span class='ident'>as_ref</span>().<span class='ident'>unwrap</span>().<span class='ident'>len</span>() <span class='op'>==</span> <span class='number'>0</span>) {
             <span class='ident'>announce_list</span> <span class='op'>=</span> <span class='prelude-val'>None</span>;
         }
-        <span class='comment'>// Spec Says We Should Randomize Backup Trackers Within Each Tier</span>
+        <span class='comment'>// Spec Says We Should Randomize Backup Trackers Within Each Tier</span>
         
         <span class='kw'>let</span> <span class='ident'>comment</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>torr_dict</span>.<span class='ident'>find_equiv</span>(<span class='kw-2'>&amp;</span><span class='string'>&quot;comment&quot;</span>) {
             <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>Bytes</span>(<span class='kw-2'>ref</span> <span class='ident'>n</span>)) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>n</span>.<span class='ident'>container_as_str</span>().<span class='ident'>ok_or</span>(
@@ -357,7 +357,7 @@
             _ <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>
         };
         
-        <span class='comment'>// Torrent Files May Incorrectly Expose This As A BenVal::Int</span>
+        <span class='comment'>// Torrent Files May Incorrectly Expose This As A BenVal::Int</span>
         <span class='kw'>let</span> <span class='ident'>creation_date</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>torr_dict</span>.<span class='ident'>find_equiv</span>(<span class='kw-2'>&amp;</span><span class='string'>&quot;creation date&quot;</span>) {
             <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>Bytes</span>(<span class='kw-2'>ref</span> <span class='ident'>n</span>)) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>n</span>.<span class='ident'>container_as_str</span>().<span class='ident'>ok_or</span>(
                 <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;creation date Not Valid UTF-8 In torr_dict&quot;</span>)
@@ -415,7 +415,7 @@
     <span class='kw'>pub</span> <span class='ident'>path</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>str</span><span class='op'>&gt;&gt;</span>
 }
 
-<span class='comment'>// File(s), Name, Piece Length, Pieces</span>
+<span class='comment'>// File(s), Name, Piece Length, Pieces</span>
 <span class='kw'>enum</span> <span class='ident'>FileType</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
     <span class='ident'>SingleFile</span>(<span class='ident'>File</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>, <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>str</span>, <span class='ident'>uint</span>, <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]),
     <span class='ident'>MultiFile</span>(<span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>File</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;&gt;</span>, <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>str</span>, <span class='ident'>uint</span>, <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>])

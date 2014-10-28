@@ -44,7 +44,7 @@
 <h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>upnp</a>::<wbr><a class='enum' href=''>UPnPInterface</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-24197' href='../../src/rust-bt/src/rust-bt/upnp.rs.html#171-176'>[src]</a></span></h1>
+        </span><a id='src-19769' href='../../src/rust-bt/src/rust-bt/upnp.rs.html#130-135'>[src]</a></span></h1>
 <pre class='rust enum'>pub enum UPnPInterface {
     Root(<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>, <a class='type' href='../../rust-bt/upnp/type.StrPos.html' title='rust-bt::upnp::StrPos'>StrPos</a>, <a class='type' href='../../rust-bt/upnp/type.StrPos.html' title='rust-bt::upnp::StrPos'>StrPos</a>, <a class='type' href='../../rust-bt/upnp/type.StrPos.html' title='rust-bt::upnp::StrPos'>StrPos</a>, <a class='type' href='../../rust-bt/upnp/type.StrPos.html' title='rust-bt::upnp::StrPos'>StrPos</a>, <a class='type' href='../../rust-bt/upnp/type.StrPos.html' title='rust-bt::upnp::StrPos'>StrPos</a>),
     Device(<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>, <a class='type' href='../../rust-bt/upnp/type.StrPos.html' title='rust-bt::upnp::StrPos'>StrPos</a>, <a class='type' href='../../rust-bt/upnp/type.StrPos.html' title='rust-bt::upnp::StrPos'>StrPos</a>, <a class='type' href='../../rust-bt/upnp/type.StrPos.html' title='rust-bt::upnp::StrPos'>StrPos</a>, <a class='type' href='../../rust-bt/upnp/type.StrPos.html' title='rust-bt::upnp::StrPos'>StrPos</a>, <a class='type' href='../../rust-bt/upnp/type.StrPos.html' title='rust-bt::upnp::StrPos'>StrPos</a>),
@@ -63,9 +63,7 @@ about an interface but also to get access to the services exposed by the interfa
 
 <p>This function does not check to make sure that only services responded
 to our request, so it is assumed that devices on the network correctly
-follow the UPnP specification. As of now, any services that are not defined
-at <a href="http://upnp.org/sdcps-and-certification/standards/sdcps/">http://upnp.org/sdcps-and-certification/standards/sdcps/</a> will not be found
-by this method (use find_all and filter with is_service).</p>
+follow the UPnP specification. </p>
 
 <p>This is a blocking operation.</p>
 </div><h4 id='method.find_devices' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.find_devices' class='fnname'>find_devices</a>(from_addr: <a class='struct' href='http://doc.rust-lang.org/nightly/std/io/net/ip/struct.SocketAddr.html' title='std::io::net::ip::SocketAddr'>SocketAddr</a>, name: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>, version: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='enum' href='../../rust-bt/upnp/enum.UPnPInterface.html' title='rust-bt::upnp::UPnPInterface'>UPnPInterface</a>&gt;&gt;</code></h4>
@@ -73,9 +71,7 @@ by this method (use find_all and filter with is_service).</p>
 
 <p>This function does not check to make sure that only devices responded
 to our request, so it is assumed that devices on the network correctly
-follow the UPnP specification. As of now, any devices that are not defined
-at <a href="http://upnp.org/sdcps-and-certification/standards/sdcps/">http://upnp.org/sdcps-and-certification/standards/sdcps/</a> will not be found
-by this method (use find_all and filter with is_device).</p>
+follow the UPnP specification. </p>
 
 <p>This is a blocking operation.</p>
 </div><h4 id='method.find_uuid' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.find_uuid' class='fnname'>find_uuid</a>(from_addr: <a class='struct' href='http://doc.rust-lang.org/nightly/std/io/net/ip/struct.SocketAddr.html' title='std::io::net::ip::SocketAddr'>SocketAddr</a>, uuid: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='enum' href='../../rust-bt/upnp/enum.UPnPInterface.html' title='rust-bt::upnp::UPnPInterface'>UPnPInterface</a>&gt;&gt;</code></h4>
