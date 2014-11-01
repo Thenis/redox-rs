@@ -44,14 +44,36 @@
 <h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>upnp</a>::<wbr><a class='struct' href=''>ServiceDesc</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-12359' href='../../src/rust-bt/src/rust-bt/upnp.rs.html#53-60'>[src]</a></span></h1>
+        </span><a id='src-16658' href='../../src/rust-bt/src/rust-bt/upnp.rs.html#60-67'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct ServiceDesc {
     // some fields omitted
 }</pre><div class='docblock'><p>Type used to represent a service description. Service actions can be viewed
 as well as related in and out parameters and service state variables.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><a class='stability Unmarked' title='No stability level'></a><code>impl <a class='struct' href='../../rust-bt/upnp/struct.ServiceDesc.html' title='rust-bt::upnp::ServiceDesc'>ServiceDesc</a></code></h3><div class='impl-methods'><h4 id='method.parse' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.parse' class='fnname'>parse</a>(location: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>, st: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='struct' href='../../rust-bt/upnp/struct.ServiceDesc.html' title='rust-bt::upnp::ServiceDesc'>ServiceDesc</a>&gt;</code></h4>
-<div class='docblock'><p>Takes a location corresponding to the root device description page of a UPnPInterface
-as well as the st field of the interface which will always be unique to a service/device.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><a class='stability Unmarked' title='No stability level'></a><code>impl <a class='struct' href='../../rust-bt/upnp/struct.ServiceDesc.html' title='rust-bt::upnp::ServiceDesc'>ServiceDesc</a></code></h3><div class='impl-methods'><h4 id='method.actions' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.actions' class='fnname'>actions</a>&lt;'a&gt;(&amp;'a self) -&gt; <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;'a <a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></h4>
+<div class='docblock'><p>Returns a list of string slices corresponding to each action that can be
+sent to this service. The slice includes the action name, and any in or out
+parameters expected/provided as well as their related state variables. The 
+&quot;relatedStateVariable&quot; corresponds to an entry in the &quot;serviceStateTable&quot;.</p>
+
+<p>The response is left in the XML format that it was sent from the UPnPInterface
+in. We leave it in this format so that we don&#39;t spend time allocating memory and
+parsing responses.</p>
+</div><h4 id='method.state_variables' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.state_variables' class='fnname'>state_variables</a>&lt;'a&gt;(&amp;'a self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;'a <a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></h4>
+<div class='docblock'><p>Optionally returns a string slice corresponding to the &quot;serviceStateTable&quot;
+of the service description. This table explains the data types referenced
+in the &quot;relatedStateVariable&quot; field for each in or out parameters for each
+action.</p>
+
+<p>The response is left in the XML format that it was sent from the UPnPInterface
+in. We leave it in this format so that we don&#39;t spend time allocating memory and
+parsing responses.</p>
+</div><h4 id='method.send_action' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.send_action' class='fnname'>send_action</a>(&amp;self, action: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>, params: <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(&amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>, &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>)</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>&gt;</code></h4>
+<div class='docblock'><p>Takes an action string representing the procedure to call as well as an
+array slice of tuples in the form (arg_name, arg_value). An empty array 
+slice indicates that no parameters are expected for the specified action.</p>
+
+<p>This operation will not check to make sure that valid actions or parameters
+have been passed in, so any error handling may happen on the service end.</p>
 
 <p>This is a blocking operation.</p>
 </div></div></section>

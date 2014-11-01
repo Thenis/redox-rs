@@ -224,11 +224,9 @@
 <span id='182'>182</span>
 <span id='183'>183</span>
 <span id='184'>184</span>
-<span id='185'>185</span>
 </pre><pre class='rust '>
-<span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>rand</span>, <span class='ident'>i64</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>udp</span>::{<span class='ident'>UdpSocket</span>, <span class='ident'>UdpStream</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>tcp</span>::{<span class='ident'>TcpStream</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>rand</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>udp</span>::{<span class='ident'>UdpStream</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>ip</span>::{<span class='ident'>SocketAddr</span>, <span class='ident'>Ipv4Addr</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::{<span class='ident'>IoResult</span>, <span class='ident'>BufWriter</span>, <span class='ident'>BufReader</span>, <span class='ident'>ConnectionFailed</span>, <span class='ident'>EndOfFile</span>, <span class='ident'>OtherIoError</span>, <span class='ident'>InvalidInput</span>};
 
@@ -251,7 +249,7 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>url</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>info_hash</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>UdpTracker</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>dest_sock</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>util</span>::<span class='ident'>get_sockaddr</span>(<span class='ident'>url</span>));
         
-        <span class='kw'>if</span> (<span class='ident'>info_hash</span>.<span class='ident'>len</span>() <span class='op'>!=</span> <span class='number'>20</span>) {
+        <span class='kw'>if</span> <span class='ident'>info_hash</span>.<span class='ident'>len</span>() <span class='op'>!=</span> <span class='number'>20</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;Invalid Size For info_hash&quot;</span>));
         }
         
@@ -274,8 +272,8 @@
                     };
                     
                     <span class='kw'>match</span> <span class='ident'>UdpTracker</span>::<span class='ident'>connect_request</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>udp_stream</span>) {
-                        <span class='prelude-val'>Ok</span>(<span class='ident'>n</span>) <span class='op'>=&gt;</span> <span class='ident'>tx</span>.<span class='ident'>send</span>(<span class='ident'>udp_stream</span>),
-                        <span class='prelude-val'>Err</span>(<span class='ident'>n</span>) <span class='op'>=&gt;</span> ()
+                        <span class='prelude-val'>Ok</span>(_) <span class='op'>=&gt;</span> <span class='ident'>tx</span>.<span class='ident'>send</span>(<span class='ident'>udp_stream</span>),
+                        <span class='prelude-val'>Err</span>(_) <span class='op'>=&gt;</span> ()
                     }
                 });
             }
@@ -311,7 +309,7 @@
                 <span class='prelude-val'>Err</span>(_) <span class='op'>=&gt;</span> { <span class='ident'>attempt</span> <span class='op'>+=</span> <span class='number'>1</span>; }
             };
         }
-        <span class='kw'>if</span> (<span class='ident'>attempt</span> <span class='op'>==</span> <span class='ident'>MAX_ATTEMPTS</span>) {
+        <span class='kw'>if</span> <span class='ident'>attempt</span> <span class='op'>==</span> <span class='ident'>MAX_ATTEMPTS</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>ConnectionFailed</span>, <span class='string'>&quot;No Connection Response From Server&quot;</span>));
         }
         
@@ -325,22 +323,22 @@
         { <span class='comment'>// Limit Lifetime Of Writer Object</span>
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>send_writer</span> <span class='op'>=</span> <span class='ident'>BufWriter</span>::<span class='ident'>new</span>(<span class='ident'>send_bytes</span>);
             
-            <span class='ident'>send_writer</span>.<span class='ident'>write_be_i64</span>(<span class='number'>0x41727101980</span>); <span class='comment'>// Part Of The Standard</span>
-            <span class='ident'>send_writer</span>.<span class='ident'>write_be_i32</span>(<span class='number'>0</span>); <span class='comment'>// Connect Request</span>
-            <span class='ident'>send_writer</span>.<span class='ident'>write_be_i32</span>(<span class='ident'>send_trans_id</span>); <span class='comment'>// Verify This In The Response</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_writer</span>.<span class='ident'>write_be_i64</span>(<span class='number'>0x41727101980</span>)); <span class='comment'>// Part Of The Standard</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_writer</span>.<span class='ident'>write_be_i32</span>(<span class='number'>0</span>)); <span class='comment'>// Connect Request</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_writer</span>.<span class='ident'>write_be_i32</span>(<span class='ident'>send_trans_id</span>)); <span class='comment'>// Verify This In The Response</span>
         }
         
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>recv_bytes</span> <span class='op'>=</span> [<span class='number'>0u8</span>,..<span class='number'>16</span>];
         <span class='kw'>let</span> <span class='ident'>bytes_read</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>UdpTracker</span>::<span class='ident'>send_request</span>(<span class='ident'>udp</span>, <span class='ident'>send_bytes</span>, <span class='ident'>recv_bytes</span>));
-        <span class='kw'>if</span> (<span class='ident'>bytes_read</span> <span class='op'>!=</span> <span class='ident'>recv_bytes</span>.<span class='ident'>len</span>()) {
+        <span class='kw'>if</span> <span class='ident'>bytes_read</span> <span class='op'>!=</span> <span class='ident'>recv_bytes</span>.<span class='ident'>len</span>() {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>EndOfFile</span>, <span class='string'>&quot;Didn&#39;t Receive All 16 Bytes From Tracker&quot;</span>));
         }
         
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>recv_reader</span> <span class='op'>=</span> <span class='ident'>BufReader</span>::<span class='ident'>new</span>(<span class='ident'>recv_bytes</span>);
-        <span class='kw'>if</span> (<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>recv_reader</span>.<span class='ident'>read_be_i32</span>()) <span class='op'>!=</span> <span class='number'>0</span>) {
+        <span class='kw'>if</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>recv_reader</span>.<span class='ident'>read_be_i32</span>()) <span class='op'>!=</span> <span class='number'>0</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>OtherIoError</span>, <span class='string'>&quot;Tracker Responded To A Different Action (Not Connect)&quot;</span>));
         }
-        <span class='kw'>if</span> (<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>recv_reader</span>.<span class='ident'>read_be_i32</span>()) <span class='op'>!=</span> <span class='ident'>send_trans_id</span>) {
+        <span class='kw'>if</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>recv_reader</span>.<span class='ident'>read_be_i32</span>()) <span class='op'>!=</span> <span class='ident'>send_trans_id</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>OtherIoError</span>, <span class='string'>&quot;Tracker Did Not Send Us A Matching Transaction Id&quot;</span>));
         }
         
@@ -367,19 +365,19 @@
         {
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>send_buf</span> <span class='op'>=</span> <span class='ident'>BufWriter</span>::<span class='ident'>new</span>(<span class='ident'>send_bytes</span>);
             
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='ident'>connect_id</span>); <span class='comment'>// Our Connection Id</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>1</span>); <span class='comment'>// This Is An Announce Request</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='ident'>send_trans_id</span>); <span class='comment'>// Random For Each Request</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write</span>(<span class='self'>self</span>.<span class='ident'>info_hash</span>); <span class='comment'>// Identifies The Torrent File</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write</span>(<span class='self'>self</span>.<span class='ident'>peer_id</span>); <span class='comment'>// Self Designated Peer Id</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='number'>0</span>); <span class='comment'>// Bytes Downloaded So Far</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='ident'>total_size</span> <span class='kw'>as</span> <span class='ident'>i64</span>); <span class='comment'>// Bytes Needed</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='number'>0</span>); <span class='comment'>// Bytes Uploaded So Far</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>0</span>); <span class='comment'>// Specific Event</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>0</span>); <span class='comment'>// IPv4 Address (0 For Source Address)</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>12</span>); <span class='comment'>// Key (Helps With Endianness For Tracker?)</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='op'>-</span><span class='number'>1</span>); <span class='comment'>// Number Of Clients To Return (-1 Default)</span>
-            <span class='ident'>send_buf</span>.<span class='ident'>write_be_i16</span>(<span class='number'>6882</span>); <span class='comment'>// Port For Other Clients To Connect (Needs To Be Port Forwarded Behind NAT)</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='ident'>connect_id</span>)); <span class='comment'>// Our Connection Id</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>1</span>)); <span class='comment'>// This Is An Announce Request</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='ident'>send_trans_id</span>)); <span class='comment'>// Random For Each Request</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_buf</span>.<span class='ident'>write</span>(<span class='self'>self</span>.<span class='ident'>info_hash</span>)); <span class='comment'>// Identifies The Torrent File</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_buf</span>.<span class='ident'>write</span>(<span class='self'>self</span>.<span class='ident'>peer_id</span>)); <span class='comment'>// Self Designated Peer Id</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='number'>0</span>)); <span class='comment'>// Bytes Downloaded So Far</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='ident'>total_size</span> <span class='kw'>as</span> <span class='ident'>i64</span>)); <span class='comment'>// Bytes Needed</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_buf</span>.<span class='ident'>write_be_i64</span>(<span class='number'>0</span>)); <span class='comment'>// Bytes Uploaded So Far</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>0</span>)); <span class='comment'>// Specific Event</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>0</span>)); <span class='comment'>// IPv4 Address (0 For Source Address)</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='number'>12</span>)); <span class='comment'>// Key (Helps With Endianness For Tracker?)</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_buf</span>.<span class='ident'>write_be_i32</span>(<span class='op'>-</span><span class='number'>1</span>)); <span class='comment'>// Number Of Clients To Return (-1 Default)</span>
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>send_buf</span>.<span class='ident'>write_be_i16</span>(<span class='number'>6882</span>)); <span class='comment'>// Port For Other Clients To Connect (Needs To Be Port Forwarded Behind NAT)</span>
         }
         
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>recv_bytes</span> <span class='op'>=</span> [<span class='number'>0u8</span>,..<span class='number'>10000</span>];
@@ -387,10 +385,10 @@
         
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>recv_reader</span> <span class='op'>=</span> <span class='ident'>BufReader</span>::<span class='ident'>new</span>(<span class='ident'>recv_bytes</span>);
         
-        <span class='kw'>if</span> (<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>recv_reader</span>.<span class='ident'>read_be_i32</span>()) <span class='op'>!=</span> <span class='number'>1</span>) {
+        <span class='kw'>if</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>recv_reader</span>.<span class='ident'>read_be_i32</span>()) <span class='op'>!=</span> <span class='number'>1</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>OtherIoError</span>, <span class='string'>&quot;Tracker Responded To A Different Action (Not Announce)&quot;</span>));
         }
-        <span class='kw'>if</span> (<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>recv_reader</span>.<span class='ident'>read_be_i32</span>()) <span class='op'>!=</span> <span class='ident'>send_trans_id</span>) {
+        <span class='kw'>if</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>recv_reader</span>.<span class='ident'>read_be_i32</span>()) <span class='op'>!=</span> <span class='ident'>send_trans_id</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>OtherIoError</span>, <span class='string'>&quot;Tracker Responded With A Different Transaction Id&quot;</span>));
         }
         
