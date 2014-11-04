@@ -66,32 +66,84 @@
 <span id='24'>24</span>
 <span id='25'>25</span>
 <span id='26'>26</span>
+<span id='27'>27</span>
+<span id='28'>28</span>
+<span id='29'>29</span>
+<span id='30'>30</span>
+<span id='31'>31</span>
+<span id='32'>32</span>
+<span id='33'>33</span>
+<span id='34'>34</span>
+<span id='35'>35</span>
+<span id='36'>36</span>
+<span id='37'>37</span>
+<span id='38'>38</span>
+<span id='39'>39</span>
+<span id='40'>40</span>
+<span id='41'>41</span>
+<span id='42'>42</span>
+<span id='43'>43</span>
+<span id='44'>44</span>
+<span id='45'>45</span>
+<span id='46'>46</span>
+<span id='47'>47</span>
+<span id='48'>48</span>
+<span id='49'>49</span>
+<span id='50'>50</span>
+<span id='51'>51</span>
+<span id='52'>52</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::{<span class='ident'>IoResult</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>ip</span>::{<span class='ident'>SocketAddr</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>ip</span>::{<span class='ident'>SocketAddr</span>, <span class='ident'>IpAddr</span>};
 
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>AnnounceInfo</span> {
-    <span class='kw'>pub</span> <span class='ident'>interval</span>: <span class='ident'>i32</span>,
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>SwarmInfo</span> {
+    <span class='kw'>pub</span> <span class='ident'>interval</span>: <span class='ident'>Receiver</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span>,
     <span class='kw'>pub</span> <span class='ident'>leechers</span>: <span class='ident'>i32</span>,
     <span class='kw'>pub</span> <span class='ident'>seeders</span>: <span class='ident'>i32</span>,
-    <span class='kw'>pub</span> <span class='ident'>peers</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>SocketAddr</span><span class='op'>&gt;</span>
+    <span class='kw'>pub</span> <span class='ident'>peers</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>SocketAddr</span><span class='op'>&gt;</span> 
+    <span class='comment'>// TODO: Better interface should allow for Vec reuse on updates. As of now, we</span>
+    <span class='comment'>// are allocating a new Vec for each update_announce to store a peer list that</span>
+    <span class='comment'>// has most likely, not changed or added/removed a few peers.</span>
 }
 
 <span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>Tracker</span> {
-    <span class='kw'>fn</span> <span class='ident'>socket_name</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>SocketAddr</span><span class='op'>&gt;</span>;
+    <span class='doccomment'>/// Returns the local ip address that is being used to communicate with the tracker.</span>
+    <span class='kw'>fn</span> <span class='ident'>local_ip</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>IpAddr</span><span class='op'>&gt;</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>announce</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>total_bytes</span>: <span class='ident'>uint</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>AnnounceInfo</span><span class='op'>&gt;</span>;
+    <span class='doccomment'>/// Returns information about the swarm for a particular torrent file without</span>
+    <span class='doccomment'>/// joining the swarm.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// This is a blocking operation.</span>
+    <span class='kw'>fn</span> <span class='ident'>scrape</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>SwarmInfo</span><span class='op'>&gt;</span>;
     
-    <span class='comment'>//fn announce_update(&amp;mut self, );</span>
+    <span class='doccomment'>/// Sends an announce request to the tracker signalling a start event. This request </span>
+    <span class='doccomment'>/// enters us into the swarm and we are required to send periodic updates as </span>
+    <span class='doccomment'>/// specified by the tracker in order to be kept in the swarm. Periodic updates </span>
+    <span class='doccomment'>/// should be sent with update_announce.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// This is a blocking operation.</span>
+    <span class='kw'>fn</span> <span class='ident'>start_announce</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>total_bytes</span>: <span class='ident'>uint</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>SwarmInfo</span><span class='op'>&gt;</span>;
     
-    <span class='comment'>//fn announce_stop();</span>
+    <span class='doccomment'>/// Sends an announce request to the tracker signalling an update event. This request</span>
+    <span class='doccomment'>/// acts as a heartbeat so that the tracker knows we are still connected and wanting</span>
+    <span class='doccomment'>/// to be kept in the swarm.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// This is a blocking operation.</span>
+    <span class='kw'>fn</span> <span class='ident'>update_announce</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>total_down</span>: <span class='ident'>uint</span>, <span class='ident'>total_left</span>: <span class='ident'>uint</span>, <span class='ident'>total_up</span>: <span class='ident'>uint</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>SwarmInfo</span><span class='op'>&gt;</span>;
     
-    <span class='comment'>//fn announce_complete();</span>
-    <span class='comment'>// fn update(&amp;mut self, bytes_received: uint, bytes_left: uint) -&gt; IoResult&lt;Vec&lt;u8&gt;&gt;;</span>
+    <span class='doccomment'>/// Sends an announce request to the tracker signalling a stop event. This request</span>
+    <span class='doccomment'>/// exists to let the tracker know that we are gracefully shutting down and that</span>
+    <span class='doccomment'>/// it should remove us from the swarm.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// This is a blocking operation.</span>
+    <span class='kw'>fn</span> <span class='ident'>stop_announce</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>total_down</span>: <span class='ident'>uint</span>, <span class='ident'>total_left</span>: <span class='ident'>uint</span>, <span class='ident'>total_up</span>: <span class='ident'>uint</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span>;
     
-    <span class='comment'>//pub fn stop(&amp;mut self, bytes_received: uint, bytes_left: uint) -&gt; IoResult&lt;Vec&lt;u8&gt;&gt;;</span>
-    
-    <span class='comment'>//pub fn complete(&amp;mut self, bytes_received: uint, bytes_left: uint) -&gt; IoResult&lt;Vec&lt;u8&gt;&gt;;</span>
+    <span class='doccomment'>/// Sends an announce request to the tracker signalling a completed event. This request</span>
+    <span class='doccomment'>/// exists to let the tracker know that we have completed our download TEST TO CHECK</span>
+    <span class='doccomment'>/// WHAT EXACTLY THIS MAKES THE TRACKER DO.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// This is a blocking operation.</span>
+    <span class='kw'>fn</span> <span class='ident'>complete_announce</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>total_bytes</span>: <span class='ident'>uint</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span>;
 }
 </pre>
 </section>
