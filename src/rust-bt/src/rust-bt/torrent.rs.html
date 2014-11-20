@@ -286,7 +286,7 @@
 <span id='244'>244</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>util</span>;
-<span class='kw'>use</span> <span class='ident'>bencode</span>::{<span class='ident'>BenValue</span>, <span class='ident'>Bytes</span>, <span class='ident'>List</span>, <span class='ident'>Int</span>};
+<span class='kw'>use</span> <span class='ident'>bencode</span>::<span class='ident'>BenVal</span>::{<span class='kw'>mod</span>, <span class='ident'>Bytes</span>, <span class='ident'>List</span>, <span class='ident'>Int</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>path</span>::<span class='ident'>BytesContainer</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::{<span class='ident'>HashMap</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::{<span class='ident'>InvalidInput</span>, <span class='ident'>IoResult</span>};
@@ -302,7 +302,7 @@
 }
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>Torrent</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='ident'>ben_torr</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>BenValue</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>Torrent</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='ident'>ben_torr</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>BenVal</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>Torrent</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>torr_dict</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>ben_torr</span>.<span class='ident'>dict</span>().<span class='ident'>ok_or</span>(
             <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;ben_torr Is Not A Dict Value&quot;</span>)
         ));
@@ -357,7 +357,7 @@
             _ <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>
         };
         
-        <span class='comment'>// Torrent Files May Incorrectly Expose This As A BenValue::Int</span>
+        <span class='comment'>// Torrent Files May Incorrectly Expose This As A BenVal::Int</span>
         <span class='kw'>let</span> <span class='ident'>creation_date</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>torr_dict</span>.<span class='ident'>find_equiv</span>(<span class='string'>&quot;creation date&quot;</span>) {
             <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>Bytes</span>(<span class='kw-2'>ref</span> <span class='ident'>n</span>)) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>n</span>.<span class='ident'>container_as_str</span>().<span class='ident'>ok_or</span>(
                 <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;creation date Not Valid UTF-8 In torr_dict&quot;</span>)
@@ -378,22 +378,22 @@
     
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_single_file</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>info</span> {
-            <span class='ident'>SingleFile</span>(..) <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
-            <span class='ident'>MultiFile</span>(..) <span class='op'>=&gt;</span> <span class='boolval'>false</span>
+            <span class='ident'>FileType</span>::<span class='ident'>SingleFile</span>(..) <span class='op'>=&gt;</span> <span class='boolval'>true</span>,
+            <span class='ident'>FileType</span>::<span class='ident'>MultiFile</span>(..) <span class='op'>=&gt;</span> <span class='boolval'>false</span>
         }
     }
     
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_multi_file</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>info</span> {
-            <span class='ident'>SingleFile</span>(..) <span class='op'>=&gt;</span> <span class='boolval'>false</span>,
-            <span class='ident'>MultiFile</span>(..) <span class='op'>=&gt;</span> <span class='boolval'>true</span>
+            <span class='ident'>FileType</span>::<span class='ident'>SingleFile</span>(..) <span class='op'>=&gt;</span> <span class='boolval'>false</span>,
+            <span class='ident'>FileType</span>::<span class='ident'>MultiFile</span>(..) <span class='op'>=&gt;</span> <span class='boolval'>true</span>
         }
     }
     
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>num_files</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>uint</span> {
         <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>info</span> {
-            <span class='ident'>SingleFile</span>(..) <span class='op'>=&gt;</span> <span class='number'>1</span>,
-            <span class='ident'>MultiFile</span>(<span class='kw-2'>ref</span> <span class='ident'>files</span>, _, _, _) <span class='op'>=&gt;</span> <span class='ident'>files</span>.<span class='ident'>len</span>()
+            <span class='ident'>FileType</span>::<span class='ident'>SingleFile</span>(..) <span class='op'>=&gt;</span> <span class='number'>1</span>,
+            <span class='ident'>FileType</span>::<span class='ident'>MultiFile</span>(<span class='kw-2'>ref</span> <span class='ident'>files</span>, _, _, _) <span class='op'>=&gt;</span> <span class='ident'>files</span>.<span class='ident'>len</span>()
         }
     }
     
@@ -403,8 +403,8 @@
         }
     
         <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>info</span> {
-            <span class='ident'>SingleFile</span>(<span class='kw-2'>ref</span> <span class='ident'>file</span>, _, _, _) <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>file</span>),
-            <span class='ident'>MultiFile</span>(<span class='kw-2'>ref</span> <span class='ident'>files</span>, _, _, _) <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='kw-2'>&amp;</span><span class='ident'>files</span>[<span class='ident'>index</span>])
+            <span class='ident'>FileType</span>::<span class='ident'>SingleFile</span>(<span class='kw-2'>ref</span> <span class='ident'>file</span>, _, _, _) <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>file</span>),
+            <span class='ident'>FileType</span>::<span class='ident'>MultiFile</span>(<span class='kw-2'>ref</span> <span class='ident'>files</span>, _, _, _) <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='kw-2'>&amp;</span><span class='ident'>files</span>[<span class='ident'>index</span>])
         }
     }
 }
@@ -422,9 +422,9 @@
 }
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>FileType</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='kw'>fn</span> <span class='ident'>new</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='ident'>ben_info</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>BenValue</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>FileType</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>new</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='ident'>ben_info</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>BenVal</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>FileType</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>info_dict</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>ben_info</span>.<span class='ident'>dict</span>().<span class='ident'>ok_or</span>(
-            <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;ben_info Is Not BenValue::Dict&quot;</span>)
+            <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;ben_info Is Not BenVal::Dict&quot;</span>)
         ));
     
         <span class='kw'>if</span> <span class='ident'>info_dict</span>.<span class='ident'>contains_key_equiv</span>(<span class='string'>&quot;files&quot;</span>) {
@@ -434,7 +434,7 @@
         }
     }
     
-    <span class='kw'>fn</span> <span class='ident'>single_file</span>(<span class='ident'>info_dict</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>String</span>, <span class='ident'>BenValue</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>FileType</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>single_file</span>(<span class='ident'>info_dict</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>String</span>, <span class='ident'>BenVal</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>FileType</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>length</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>info_dict</span>.<span class='ident'>find_equiv</span>(<span class='string'>&quot;length&quot;</span>) {
             <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>Int</span>(<span class='ident'>n</span>)) <span class='op'>=&gt;</span> <span class='ident'>n</span> <span class='kw'>as</span> <span class='ident'>uint</span>,
             _ <span class='op'>=&gt;</span> { <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;length Key Not In info_dict&quot;</span>)) }
@@ -447,7 +447,7 @@
             _ <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>
         };
         
-        <span class='prelude-val'>Ok</span>(<span class='ident'>SingleFile</span>(
+        <span class='prelude-val'>Ok</span>(<span class='ident'>FileType</span>::<span class='ident'>SingleFile</span>(
             <span class='ident'>File</span>{ <span class='ident'>length</span>: <span class='ident'>length</span>, <span class='ident'>md5sum</span>: <span class='ident'>md5sum</span>, <span class='ident'>path</span>: <span class='prelude-val'>None</span> },
             <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>FileType</span>::<span class='ident'>info_name</span>(<span class='ident'>info_dict</span>)),
             <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>FileType</span>::<span class='ident'>info_piece_length</span>(<span class='ident'>info_dict</span>)), 
@@ -455,7 +455,7 @@
         )
     }
     
-    <span class='kw'>fn</span> <span class='ident'>multi_file</span>(<span class='ident'>info_dict</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>String</span>, <span class='ident'>BenValue</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>FileType</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>multi_file</span>(<span class='ident'>info_dict</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>String</span>, <span class='ident'>BenVal</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>FileType</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>files</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>info_dict</span>.<span class='ident'>find_equiv</span>(<span class='string'>&quot;files&quot;</span>) {
             <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>List</span>(<span class='kw-2'>ref</span> <span class='ident'>n</span>)) <span class='op'>=&gt;</span> <span class='ident'>n</span>,
             _ <span class='op'>=&gt;</span> { <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;files Key Not In info_dict&quot;</span>)) }
@@ -464,7 +464,7 @@
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>files_list</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>File</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='ident'>files</span>.<span class='ident'>len</span>());
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='ident'>files</span>.<span class='ident'>iter</span>() {
             <span class='kw'>let</span> <span class='ident'>file</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>i</span>.<span class='ident'>dict</span>().<span class='ident'>ok_or</span>(
-                <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;files Is Not A BenValue::Dict&quot;</span>)
+                <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;files Is Not A BenVal::Dict&quot;</span>)
             ));
             
             <span class='kw'>let</span> <span class='ident'>length</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>file</span>.<span class='ident'>find_equiv</span>(<span class='string'>&quot;length&quot;</span>) {
@@ -498,7 +498,7 @@
             );
         }
         
-        <span class='prelude-val'>Ok</span>(<span class='ident'>MultiFile</span>(
+        <span class='prelude-val'>Ok</span>(<span class='ident'>FileType</span>::<span class='ident'>MultiFile</span>(
             <span class='ident'>files_list</span>,
             <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>FileType</span>::<span class='ident'>info_name</span>(<span class='ident'>info_dict</span>)),
             <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>FileType</span>::<span class='ident'>info_piece_length</span>(<span class='ident'>info_dict</span>)), 
@@ -506,7 +506,7 @@
         )
     }
     
-    <span class='kw'>fn</span> <span class='ident'>info_name</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='ident'>info_dict</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>String</span>, <span class='ident'>BenValue</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>str</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>info_name</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='ident'>info_dict</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>String</span>, <span class='ident'>BenVal</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>str</span><span class='op'>&gt;</span> {
         <span class='kw'>match</span> <span class='ident'>info_dict</span>.<span class='ident'>find_equiv</span>(<span class='string'>&quot;name&quot;</span>) {
             <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>Bytes</span>(<span class='kw-2'>ref</span> <span class='ident'>n</span>)) <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>n</span>.<span class='ident'>container_as_str</span>().<span class='ident'>ok_or</span>(
                     <span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;name Key In info_dict Not A String Value&quot;</span>)
@@ -515,14 +515,14 @@
         }
     }
     
-    <span class='kw'>fn</span> <span class='ident'>info_piece_length</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='ident'>info_dict</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>String</span>, <span class='ident'>BenValue</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>uint</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>info_piece_length</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='ident'>info_dict</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>String</span>, <span class='ident'>BenVal</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>uint</span><span class='op'>&gt;</span> {
         <span class='kw'>match</span> <span class='ident'>info_dict</span>.<span class='ident'>find_equiv</span>(<span class='string'>&quot;piece length&quot;</span>) {
             <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>Int</span>(<span class='ident'>n</span>)) <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>n</span> <span class='kw'>as</span> <span class='ident'>uint</span>),
             _ <span class='op'>=&gt;</span> <span class='prelude-val'>Err</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;piece length Key Not In info_dict&quot;</span>))
         }
     }
     
-    <span class='kw'>fn</span> <span class='ident'>info_pieces</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='ident'>info_dict</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>String</span>, <span class='ident'>BenValue</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]<span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>info_pieces</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span>(<span class='ident'>info_dict</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>String</span>, <span class='ident'>BenVal</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]<span class='op'>&gt;</span> {
         <span class='kw'>match</span> <span class='ident'>info_dict</span>.<span class='ident'>find_equiv</span>(<span class='string'>&quot;pieces&quot;</span>) {
             <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>Bytes</span>(<span class='kw-2'>ref</span> <span class='ident'>n</span>)) <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>n</span>.<span class='ident'>as_slice</span>()),
             _ <span class='op'>=&gt;</span> <span class='prelude-val'>Err</span>(<span class='ident'>util</span>::<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;pieces Key Not In info_dict&quot;</span>))

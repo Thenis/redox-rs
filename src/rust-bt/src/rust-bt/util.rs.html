@@ -158,9 +158,10 @@
 <span id='116'>116</span>
 <span id='117'>117</span>
 <span id='118'>118</span>
+<span id='119'>119</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>regex</span>::<span class='ident'>Regex</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>u16</span>, <span class='ident'>rand</span>, <span class='ident'>num</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>str</span>, <span class='ident'>rand</span>, <span class='ident'>num</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::{<span class='ident'>IoError</span>, <span class='ident'>IoResult</span>, <span class='ident'>IoErrorKind</span>, <span class='ident'>InvalidInput</span>, <span class='ident'>ConnectionFailed</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>addrinfo</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>udp</span>::{<span class='ident'>UdpSocket</span>};
@@ -206,7 +207,8 @@
     }
 }
 
-<span class='doccomment'>/// The standard wait algorithm defined in the UDP Tracker Protocol.</span>
+<span class='doccomment'>/// The standard wait algorithm defined in the UDP Tracker Protocol. Returned value</span>
+<span class='doccomment'>/// is in seconds.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_udp_wait</span>(<span class='ident'>attempt</span>: <span class='ident'>uint</span>) <span class='op'>-&gt;</span> <span class='ident'>u64</span> {
     <span class='number'>15</span> <span class='op'>*</span> <span class='ident'>num</span>::<span class='ident'>pow</span>(<span class='number'>2</span>, <span class='ident'>attempt</span>)
 }
@@ -237,9 +239,9 @@
     }
         
     <span class='kw'>match</span> <span class='ident'>trans_str</span> {
-        <span class='string'>&quot;http&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>HTTP</span>), 
-        <span class='string'>&quot;tcp&quot;</span>  <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>TCP</span>),
-        <span class='string'>&quot;udp&quot;</span>  <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>UDP</span>),
+        <span class='string'>&quot;http&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Transport</span>::<span class='ident'>HTTP</span>), 
+        <span class='string'>&quot;tcp&quot;</span>  <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Transport</span>::<span class='ident'>TCP</span>),
+        <span class='string'>&quot;udp&quot;</span>  <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Transport</span>::<span class='ident'>UDP</span>),
         _ <span class='op'>=&gt;</span> <span class='prelude-val'>Err</span>(<span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;Transport Protocol Not Found In url&quot;</span>))
     }
 }
@@ -256,7 +258,7 @@
     }
     
     <span class='kw'>let</span> <span class='ident'>host_ip</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>addrinfo</span>::<span class='ident'>get_host_addresses</span>(<span class='ident'>host_str</span>))[<span class='number'>0</span>];
-    <span class='kw'>let</span> <span class='ident'>port_num</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>u16</span>::<span class='ident'>parse_bytes</span>(<span class='ident'>port_str</span>.<span class='ident'>as_bytes</span>(), <span class='number'>10</span>).<span class='ident'>ok_or</span>(
+    <span class='kw'>let</span> <span class='ident'>port_num</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>str</span>::<span class='ident'>from_str</span>(<span class='ident'>port_str</span>).<span class='ident'>ok_or</span>(
         <span class='ident'>get_error</span>(<span class='ident'>InvalidInput</span>, <span class='string'>&quot;Invalid Port Number Found In url&quot;</span>)
     ));
     
