@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `get_udp_sock` fn in crate `rust-bt`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, get_udp_sock">
+    <meta name="description" content="API documentation for the Rust `ScrapeInfo` struct in crate `rust-bt`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ScrapeInfo">
 
-    <title>rust-bt::util::get_udp_sock - Rust</title>
+    <title>rust-bt::tracker::ScrapeInfo - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../main.css">
 
@@ -26,7 +26,7 @@
 
     <section class="sidebar">
         
-        <p class='location'><a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>util</a></p><div class='block enum'><h2>Enums</h2><a class='enum ' href='enum.Transport.html'>Transport</a></div><div class='block fn'><h2>Functions</h2><a class='fn ' href='fn.gen_peer_id.html'>gen_peer_id</a><a class='fn ' href='fn.get_error.html'>get_error</a><a class='fn ' href='fn.get_net_addrs.html'>get_net_addrs</a><a class='fn ' href='fn.get_path.html'>get_path</a><a class='fn ' href='fn.get_sockaddr.html'>get_sockaddr</a><a class='fn ' href='fn.get_transport.html'>get_transport</a><a class='fn current' href='fn.get_udp_sock.html'>get_udp_sock</a><a class='fn ' href='fn.get_udp_wait.html'>get_udp_wait</a></div>
+        <p class='location'><a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>tracker</a></p><div class='block struct'><h2>Structs</h2><a class='struct ' href='struct.AnnounceInfo.html'>AnnounceInfo</a><a class='struct current' href='struct.ScrapeInfo.html'>ScrapeInfo</a></div><div class='block trait'><h2>Traits</h2><a class='trait ' href='trait.Tracker.html'>Tracker</a></div>
     </section>
 
     <nav class="sub">
@@ -40,16 +40,17 @@
         </form>
     </nav>
 
-    <section id='main' class="content fn">
-<h1 class='fqn'><span class='in-band'>Function <a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>util</a>::<wbr><a class='fn' href=''>get_udp_sock</a><wbr></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>tracker</a>::<wbr><a class='struct' href=''>ScrapeInfo</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-31724' href='../../src/rust-bt/src/rust-bt/util.rs.html#32-47'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn get_udp_sock(addr: <a class='struct' href='http://doc.rust-lang.org/nightly/std/io/net/ip/struct.SocketAddr.html' title='std::io::net::ip::SocketAddr'>SocketAddr</a>, attempts: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/std/io/net/udp/struct.UdpSocket.html' title='std::io::net::udp::UdpSocket'>UdpSocket</a>&gt;</pre><div class='docblock'><p>Attempts to open a udp connection on addr.</p>
-
-<p>If the connection is unsuccessful, it will try again up to (attempts - 1)
-times, incrementing the port for each attempt.</p>
-</div></section>
+        </span><a id='src-2358' href='../../src/rust-bt/src/rust-bt/tracker.rs.html#4-8'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct ScrapeInfo {
+    pub leechers: <a href='http://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>,
+    pub seeders: <a href='http://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>,
+    pub downloads: <a href='http://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>,
+}</pre><h2 class='fields'>Fields</h2>
+<table><tr><td id='structfield.leechers'><a class='stability Unmarked' title='No stability level'></a><code>leechers</code></td><td></td></tr><tr><td id='structfield.seeders'><a class='stability Unmarked' title='No stability level'></a><code>seeders</code></td><td></td></tr><tr><td id='structfield.downloads'><a class='stability Unmarked' title='No stability level'></a><code>downloads</code></td><td></td></tr></table></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

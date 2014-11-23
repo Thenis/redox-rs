@@ -159,9 +159,11 @@
 <span id='117'>117</span>
 <span id='118'>118</span>
 <span id='119'>119</span>
+<span id='120'>120</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>regex</span>::<span class='ident'>Regex</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>str</span>, <span class='ident'>rand</span>, <span class='ident'>num</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>str</span>, <span class='ident'>rand</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>num</span>::<span class='ident'>Int</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::{<span class='ident'>IoError</span>, <span class='ident'>IoResult</span>, <span class='ident'>IoErrorKind</span>, <span class='ident'>InvalidInput</span>, <span class='ident'>ConnectionFailed</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>addrinfo</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>udp</span>::{<span class='ident'>UdpSocket</span>};
@@ -210,7 +212,7 @@
 <span class='doccomment'>/// The standard wait algorithm defined in the UDP Tracker Protocol. Returned value</span>
 <span class='doccomment'>/// is in seconds.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_udp_wait</span>(<span class='ident'>attempt</span>: <span class='ident'>uint</span>) <span class='op'>-&gt;</span> <span class='ident'>u64</span> {
-    <span class='number'>15</span> <span class='op'>*</span> <span class='ident'>num</span>::<span class='ident'>pow</span>(<span class='number'>2</span>, <span class='ident'>attempt</span>)
+    (<span class='number'>15</span> <span class='op'>*</span> <span class='number'>2i</span>.<span class='ident'>pow</span>(<span class='ident'>attempt</span>)) <span class='kw'>as</span> <span class='ident'>u64</span>
 }
 
 <span class='doccomment'>/// Generates a peer id from a base identifier followed by random characters.</span>

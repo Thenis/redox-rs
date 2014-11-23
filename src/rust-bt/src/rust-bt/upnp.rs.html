@@ -738,7 +738,7 @@ s:encodingStyle=\&quot;http://schemas.xmlsoap.org/soap/encoding/\&quot;&gt;
         <span class='kw'>let</span> <span class='ident'>service_desc</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>service_desc</span>.<span class='ident'>as_slice</span>();
         
         <span class='kw'>for</span> <span class='kw-2'>&amp;</span>(<span class='ident'>start</span>, <span class='ident'>end</span>) <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>actions</span>.<span class='ident'>iter</span>() {
-            <span class='ident'>actions_list</span>.<span class='ident'>push</span>(<span class='self'>self</span>.<span class='ident'>service_desc</span>.<span class='ident'>slice</span>(<span class='ident'>start</span>, <span class='ident'>end</span>));
+            <span class='ident'>actions_list</span>.<span class='ident'>push</span>(<span class='ident'>service_desc</span>.<span class='ident'>slice</span>(<span class='ident'>start</span>, <span class='ident'>end</span>));
         }
         
         <span class='ident'>actions_list</span>
