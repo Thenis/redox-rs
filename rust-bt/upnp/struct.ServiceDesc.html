@@ -44,12 +44,18 @@
 <h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>upnp</a>::<wbr><a class='struct' href=''>ServiceDesc</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-17743' href='../../src/rust-bt/src/rust-bt/upnp.rs.html#61-68'>[src]</a></span></h1>
+        </span><a id='src-18895' href='../../src/rust-bt/upnp.rs.html#68-75'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct ServiceDesc {
     // some fields omitted
 }</pre><div class='docblock'><p>Type used to represent a service description. Service actions can be viewed
 as well as related in and out parameters and service state variables.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><a class='stability Unmarked' title='No stability level'></a><code>impl <a class='struct' href='../../rust-bt/upnp/struct.ServiceDesc.html' title='rust-bt::upnp::ServiceDesc'>ServiceDesc</a></code></h3><div class='impl-methods'><h4 id='method.actions' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.actions' class='fnname'>actions</a>&lt;'a&gt;(&amp;'a self) -&gt; <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;'a <a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></h4>
+
+<p>Note: As of now, this object makes no guarantee that messages it sends to UPnP
+services that are not standard will be well formed; this is temporary as it allows
+the code to remain clean until a proper solution arises. A list of standardized 
+UPnP devices and their corresponding services can be found at 
+<a href="http://upnp.org/sdcps-and-certification/standards/sdcps/">http://upnp.org/sdcps-and-certification/standards/sdcps/</a>.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><a class='stability Unmarked' title='No stability level'></a><code>impl <a class='struct' href='../../rust-bt/upnp/struct.ServiceDesc.html' title='rust-bt::upnp::ServiceDesc'>ServiceDesc</a></code></h3><div class='impl-items'><h4 id='method.actions' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.actions' class='fnname'>actions</a>&lt;'a&gt;(&amp;'a self) -&gt; <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;'a <a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></h4>
 <div class='docblock'><p>Returns a list of string slices corresponding to each action that can be
 sent to this service. The slice includes the action name, and any in or out
 parameters expected/provided as well as their related state variables. The 

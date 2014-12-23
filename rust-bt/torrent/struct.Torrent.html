@@ -26,7 +26,7 @@
 
     <section class="sidebar">
         
-        <p class='location'><a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>torrent</a></p><div class='block struct'><h2>Structs</h2><a class='struct ' href='struct.File.html'>File</a><a class='struct current' href='struct.Torrent.html'>Torrent</a></div>
+        <p class='location'><a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>torrent</a></p><div class='block struct'><h2>Structs</h2><a class='struct ' href='struct.TorrFile.html'>TorrFile</a><a class='struct current' href='struct.Torrent.html'>Torrent</a></div><div class='block enum'><h2>Enums</h2><a class='enum ' href='enum.TorrFileType.html'>TorrFileType</a></div>
     </section>
 
     <nav class="sub">
@@ -44,21 +44,50 @@
 <h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>torrent</a>::<wbr><a class='struct' href=''>Torrent</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-1165' href='../../src/rust-bt/src/rust-bt/torrent.rs.html#7-15'>[src]</a></span></h1>
+        </span><a id='src-2249' href='../../src/rust-bt/torrent.rs.html#62-69'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Torrent&lt;'a&gt; {
-    pub announce: &amp;'a <a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>,
-    pub announce_list: <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;'a <a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;&gt;,
-    pub comment: <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;'a <a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;,
-    pub created_by: <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;'a <a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;,
-    pub creation_date: <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;'a <a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;,
     // some fields omitted
-}</pre><h2 class='fields'>Fields</h2>
-<table><tr><td id='structfield.announce'><a class='stability Unmarked' title='No stability level'></a><code>announce</code></td><td></td></tr><tr><td id='structfield.announce_list'><a class='stability Unmarked' title='No stability level'></a><code>announce_list</code></td><td></td></tr><tr><td id='structfield.comment'><a class='stability Unmarked' title='No stability level'></a><code>comment</code></td><td></td></tr><tr><td id='structfield.created_by'><a class='stability Unmarked' title='No stability level'></a><code>created_by</code></td><td></td></tr><tr><td id='structfield.creation_date'><a class='stability Unmarked' title='No stability level'></a><code>creation_date</code></td><td></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><a class='stability Unmarked' title='No stability level'></a><code>impl&lt;'a&gt; <a class='struct' href='../../rust-bt/torrent/struct.Torrent.html' title='rust-bt::torrent::Torrent'>Torrent</a>&lt;'a&gt;</code></h3><div class='impl-methods'><h4 id='method.new' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.new' class='fnname'>new</a>&lt;'a&gt;(ben_torr: &amp;'a <a class='enum' href='../../rust-bt/bencode/enum.BenVal.html' title='rust-bt::bencode::BenVal'>BenVal</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='struct' href='../../rust-bt/torrent/struct.Torrent.html' title='rust-bt::torrent::Torrent'>Torrent</a>&lt;'a&gt;&gt;</code></h4>
-<h4 id='method.is_single_file' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.is_single_file' class='fnname'>is_single_file</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
-<h4 id='method.is_multi_file' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.is_multi_file' class='fnname'>is_multi_file</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
-<h4 id='method.num_files' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.num_files' class='fnname'>num_files</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a></code></h4>
-<h4 id='method.get_file' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.get_file' class='fnname'>get_file</a>(&amp;'a self, index: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;&amp;'a <a class='struct' href='../../rust-bt/torrent/struct.File.html' title='rust-bt::torrent::File'>File</a>&gt;</code></h4>
-</div></section>
+}</pre><div class='docblock'><p>A type representing a valid torrent file.</p>
+
+<p>This type simply stores slices into other types that are actually holding
+the data. Therefore, it is very cheap to construct and copy around.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><a class='stability Unmarked' title='No stability level'></a><code>impl&lt;'a&gt; <a class='struct' href='../../rust-bt/torrent/struct.Torrent.html' title='rust-bt::torrent::Torrent'>Torrent</a>&lt;'a&gt;</code></h3><div class='impl-items'><h4 id='method.new' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.new' class='fnname'>new</a>(metainfo: &amp;'a <a class='enum' href='../../rust-bt/bencode/enum.Bencode.html' title='rust-bt::bencode::Bencode'>Bencode</a>) -&gt; <a class='type' href='../../rust-bt/error/type.TorrResult.html' title='rust-bt::error::TorrResult'>TorrResult</a>&lt;<a class='struct' href='../../rust-bt/torrent/struct.Torrent.html' title='rust-bt::torrent::Torrent'>Torrent</a>&lt;'a&gt;&gt;</code></h4>
+<div class='docblock'><p>Goes through the Bencode object and pulls out the fields required by a
+valid torrent file. Any extraneous fields that may be present within
+the Bencode object are ignored and will not be considered an error.</p>
+</div><h4 id='method.announce' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.announce' class='fnname'>announce</a>(&amp;self) -&gt; &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a></code></h4>
+<div class='docblock'><p>Returns the url of the main tracker for the current torrent file.</p>
+</div><h4 id='method.announce_list' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.announce_list' class='fnname'>announce_list</a>(&amp;'a self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;'a <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;&gt;&gt;</code></h4>
+<div class='docblock'><p>Optionally returns a list of urls pointing to backup trackers for the
+current torrent file.</p>
+</div><h4 id='method.comment' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.comment' class='fnname'>comment</a>(&amp;'a self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;'a <a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></h4>
+<div class='docblock'><p>Optionally returns any comment within the current torrent file.</p>
+</div><h4 id='method.created_by' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.created_by' class='fnname'>created_by</a>(&amp;'a self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;'a <a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;</code></h4>
+<div class='docblock'><p>Optionally returns the created by tag within the current torrent file.</p>
+</div><h4 id='method.creation_date' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.creation_date' class='fnname'>creation_date</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.i64.html'>i64</a>&gt;</code></h4>
+<div class='docblock'><p>Optionally returns the creation date of the current torrent file in
+standard UNIX epoch format.</p>
+
+<p>Some RFCs say this should be a string, others say it should be an integer.
+In practice, all torrents I have seen use an integer so an error will be
+generated if it is anything other than an integer.</p>
+</div><h4 id='method.file_type' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.file_type' class='fnname'>file_type</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a class='enum' href='../../rust-bt/torrent/enum.TorrFileType.html' title='rust-bt::torrent::TorrFileType'>TorrFileType</a>, &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>)</a></code></h4>
+<div class='docblock'><p>Returns a tuple of the type of torrent file as well as the associated name.
+See below for what the second tuple value represents:</p>
+
+<p>TorrFileType::Single -&gt; str value will be the name of the file
+TorrFIleType::Multi  -&gt; str value will be the name of the root directory</p>
+</div><h4 id='method.files' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.files' class='fnname'>files</a>(&amp;self) -&gt; &amp;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../rust-bt/torrent/struct.TorrFile.html' title='rust-bt::torrent::TorrFile'>TorrFile</a>&lt;'a&gt;&gt;</code></h4>
+<div class='docblock'><p>Returns a list of file objects for the current torrent.</p>
+
+<p>If the torrent file is of type TorrFileType::Single, the list will have 
+one entry. However, just because it has one entry does not necessarily 
+mean it is of type TorrFileType::Single.</p>
+</div><h4 id='method.piece_length' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.piece_length' class='fnname'>piece_length</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.i64.html'>i64</a></code></h4>
+<div class='docblock'><p>Returns the piece length for each file.</p>
+</div><h4 id='method.pieces' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.pieces' class='fnname'>pieces</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a></code></h4>
+<div class='docblock'><p>Returns the pieces byte array for the current torrent.</p>
+</div></div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `upnp` mod in crate `rust-bt`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, upnp">
+    <meta name="description" content="API documentation for the Rust `error` mod in crate `rust-bt`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, error">
 
-    <title>rust-bt::upnp - Rust</title>
+    <title>rust-bt::error - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../main.css">
 
@@ -26,7 +26,7 @@
 
     <section class="sidebar">
         
-        <p class='location'><a href='../index.html'>rust-bt</a></p><div class='block mod'><h2>Modules</h2><a class='mod ' href='../bencode/index.html'>bencode</a><a class='mod ' href='../error/index.html'>error</a><a class='mod ' href='../torrent/index.html'>torrent</a><a class='mod ' href='../tracker/index.html'>tracker</a><a class='mod ' href='../tracker_udp/index.html'>tracker_udp</a><a class='mod current' href='../upnp/index.html'>upnp</a><a class='mod ' href='../util/index.html'>util</a></div>
+        <p class='location'><a href='../index.html'>rust-bt</a></p><div class='block mod'><h2>Modules</h2><a class='mod ' href='../bencode/index.html'>bencode</a><a class='mod current' href='../error/index.html'>error</a><a class='mod ' href='../torrent/index.html'>torrent</a><a class='mod ' href='../tracker/index.html'>tracker</a><a class='mod ' href='../tracker_udp/index.html'>tracker_udp</a><a class='mod ' href='../upnp/index.html'>upnp</a><a class='mod ' href='../util/index.html'>util</a></div>
     </section>
 
     <nav class="sub">
@@ -41,36 +41,47 @@
     </nav>
 
     <section id='main' class="content mod">
-<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>rust-bt</a>::<wbr><a class='mod' href=''>upnp</a><wbr></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>rust-bt</a>::<wbr><a class='mod' href=''>error</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-5527' href='../../src/rust-bt/upnp.rs.html#1-565'>[src]</a></span></h1>
+        </span><a id='src-1640' href='../../src/rust-bt/error.rs.html#1-84'>[src]</a></span></h1>
 <h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                     <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='struct' href='struct.ServiceDesc.html'
-                               title='rust-bt::upnp::ServiceDesc'>ServiceDesc</a></td>
-                        <td class='docblock short'><p>Type used to represent a service description. Service actions can be viewed
-as well as related in and out parameters and service state variables.</p>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='struct' href='struct.ParseError.html'
+                               title='rust-bt::error::ParseError'>ParseError</a></td>
+                        <td class='docblock short'><p>Used when parsing external data that may have errors at any position within
+the buffer.</p>
+</td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='struct' href='struct.TorrError.html'
+                               title='rust-bt::error::TorrError'>TorrError</a></td>
+                        <td class='docblock short'><p>Used to raise an error when a piece of data required by the Torrent is
+missing from the Bencode data.</p>
 </td>
                     </tr>
                 </table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
                     <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='enum' href='enum.UPnPIntf.html'
-                               title='rust-bt::upnp::UPnPIntf'>UPnPIntf</a></td>
-                        <td class='docblock short'><p>Type used to represent different interfaces available on a network as defined
-by the UPnP specification. This type can be used to get very general information
-about an interface but also to get access to the services exposed by the interface.</p>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='enum' href='enum.TorrErrorKind.html'
+                               title='rust-bt::error::TorrErrorKind'>TorrErrorKind</a></td>
+                        <td class='docblock short'><p>A list specifying the types of TorrErrors that may occur.</p>
 </td>
                     </tr>
                 </table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
 <table>
                     <tr>
-                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.StrPos.html'
-                               title='rust-bt::upnp::StrPos'>StrPos</a></td>
-                        <td class='docblock short'><p>A tuple consisting of start and end position.</p>
-</td>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.ParseResult.html'
+                               title='rust-bt::error::ParseResult'>ParseResult</a></td>
+                        <td class='docblock short'></td>
+                    </tr>
+                
+                    <tr>
+                        <td><a class='stability Unmarked' title='No stability level'></a><a class='type' href='type.TorrResult.html'
+                               title='rust-bt::error::TorrResult'>TorrResult</a></td>
+                        <td class='docblock short'></td>
                     </tr>
                 </table></section>
     <section id='search' class="content hidden"></section>

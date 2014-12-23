@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `Transport` enum in crate `rust-bt`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, Transport">
+    <meta name="description" content="API documentation for the Rust `ParseResult` type in crate `rust-bt`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ParseResult">
 
-    <title>rust-bt::util::Transport - Rust</title>
+    <title>rust-bt::error::ParseResult - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../main.css">
 
@@ -26,7 +26,7 @@
 
     <section class="sidebar">
         
-        <p class='location'><a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>util</a></p><div class='block enum'><h2>Enums</h2><a class='enum current' href='enum.Transport.html'>Transport</a></div><div class='block fn'><h2>Functions</h2><a class='fn ' href='fn.gen_peer_id.html'>gen_peer_id</a><a class='fn ' href='fn.get_error.html'>get_error</a><a class='fn ' href='fn.get_net_addrs.html'>get_net_addrs</a><a class='fn ' href='fn.get_path.html'>get_path</a><a class='fn ' href='fn.get_sockaddr.html'>get_sockaddr</a><a class='fn ' href='fn.get_transport.html'>get_transport</a><a class='fn ' href='fn.get_udp_sock.html'>get_udp_sock</a><a class='fn ' href='fn.get_udp_wait.html'>get_udp_wait</a></div>
+        <p class='location'><a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>error</a></p><div class='block struct'><h2>Structs</h2><a class='struct ' href='struct.ParseError.html'>ParseError</a><a class='struct ' href='struct.TorrError.html'>TorrError</a></div><div class='block enum'><h2>Enums</h2><a class='enum ' href='enum.TorrErrorKind.html'>TorrErrorKind</a></div>
     </section>
 
     <nav class="sub">
@@ -40,17 +40,12 @@
         </form>
     </nav>
 
-    <section id='main' class="content enum">
-<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>util</a>::<wbr><a class='enum' href=''>Transport</a><wbr></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content type">
+<h1 class='fqn'><span class='in-band'><a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>error</a>::<wbr><a class='type' href=''>ParseResult</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-32915' href='../../src/rust-bt/util.rs.html#13'>[src]</a></span></h1>
-<pre class='rust enum'>pub enum Transport {
-    TCP,
-    UDP,
-    HTTP,
-}</pre><h2 class='variants'>Variants</h2>
-<table><tr><td id='variant.TCP'><a class='stability Unmarked' title='No stability level'></a><code>TCP</code></td><td></td></tr><tr><td id='variant.UDP'><a class='stability Unmarked' title='No stability level'></a><code>UDP</code></td><td></td></tr><tr><td id='variant.HTTP'><a class='stability Unmarked' title='No stability level'></a><code>HTTP</code></td><td></td></tr></table><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><a class='stability Experimental' title='Experimental'></a><code>impl <a class='trait' href='http://doc.rust-lang.org/nightly/core/kinds/trait.Copy.html' title='core::kinds::Copy'>Copy</a> for <a class='enum' href='../../rust-bt/util/enum.Transport.html' title='rust-bt::util::Transport'>Transport</a></code></h3><div class='impl-items'></div></section>
+        </span><a id='src-1649' href='../../src/rust-bt/error.rs.html#5'>[src]</a></span></h1>
+<pre class='rust typedef'>type ParseResult&lt;T&gt; = <a class='enum' href='http://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;T, <a class='struct' href='../../rust-bt/error/struct.ParseError.html' title='rust-bt::error::ParseError'>ParseError</a>&gt;;</pre></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

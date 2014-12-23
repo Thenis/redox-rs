@@ -44,13 +44,13 @@
 <h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>rust-bt</a>::<wbr><a href='index.html'>upnp</a>::<wbr><a class='enum' href=''>UPnPIntf</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-25549' href='../../src/rust-bt/src/rust-bt/upnp.rs.html#225-234'>[src]</a></span></h1>
+        </span><a id='src-26772' href='../../src/rust-bt/upnp.rs.html#236-245'>[src]</a></span></h1>
 <pre class='rust enum'>pub enum UPnPIntf {
     // some variants omitted
 }</pre><div class='docblock'><p>Type used to represent different interfaces available on a network as defined
 by the UPnP specification. This type can be used to get very general information
 about an interface but also to get access to the services exposed by the interface.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><a class='stability Unmarked' title='No stability level'></a><code>impl <a class='enum' href='../../rust-bt/upnp/enum.UPnPIntf.html' title='rust-bt::upnp::UPnPIntf'>UPnPIntf</a></code></h3><div class='impl-methods'><h4 id='method.find_all' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.find_all' class='fnname'>find_all</a>(from_addr: <a class='struct' href='http://doc.rust-lang.org/nightly/std/io/net/ip/struct.SocketAddr.html' title='std::io::net::ip::SocketAddr'>SocketAddr</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='enum' href='../../rust-bt/upnp/enum.UPnPIntf.html' title='rust-bt::upnp::UPnPIntf'>UPnPIntf</a>&gt;&gt;</code></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><a class='stability Unmarked' title='No stability level'></a><code>impl <a class='enum' href='../../rust-bt/upnp/enum.UPnPIntf.html' title='rust-bt::upnp::UPnPIntf'>UPnPIntf</a></code></h3><div class='impl-items'><h4 id='method.find_all' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.find_all' class='fnname'>find_all</a>(from_addr: <a class='struct' href='http://doc.rust-lang.org/nightly/std/io/net/ip/struct.SocketAddr.html' title='std::io::net::ip::SocketAddr'>SocketAddr</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='enum' href='../../rust-bt/upnp/enum.UPnPIntf.html' title='rust-bt::upnp::UPnPIntf'>UPnPIntf</a>&gt;&gt;</code></h4>
 <div class='docblock'><p>Sends out a search request for all UPnP interfaces on the specified from_addr.</p>
 
 <p>This is a blocking operation.</p>
