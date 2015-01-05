@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Tracker` trait in crate `bittorrent`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Tracker">
+
+    <title>bittorrent::tracker::Tracker - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../index.html'>bittorrent</a>::<wbr><a href='index.html'>tracker</a></p><div class='block mod'><h2>Modules</h2><a class='mod ' href='udp/index.html'>udp</a></div><div class='block struct'><h2>Structs</h2><a class='struct ' href='struct.AnnounceInfo.html'>AnnounceInfo</a><a class='struct ' href='struct.ScrapeInfo.html'>ScrapeInfo</a></div><div class='block trait'><h2>Traits</h2><a class='trait current' href='trait.Tracker.html'>Tracker</a></div>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>bittorrent</a>::<wbr><a href='index.html'>tracker</a>::<wbr><a class='trait' href=''>Tracker</a><wbr></span><span class='out-of-band'><span id='render-detail'>
+            <a id="collapse-all" href="#">[-]
+            </a>&nbsp;<a id="expand-all" href="#">[+]</a>
+        </span><a id='src-8507' href='../../src/bittorrent/tracker/mod.rs.html#24-62'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait Tracker {
+    fn <a href='#tymethod.local_ip' class='fnname'>local_ip</a>(&amp;mut self) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/std/io/net/ip/enum.IpAddr.html' title='std::io::net::ip::IpAddr'>IpAddr</a>&gt;;
+    fn <a href='#tymethod.scrape' class='fnname'>scrape</a>(&amp;mut self) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='struct' href='../../bittorrent/tracker/struct.ScrapeInfo.html' title='bittorrent::tracker::ScrapeInfo'>ScrapeInfo</a>&gt;;
+    fn <a href='#tymethod.start_announce' class='fnname'>start_announce</a>(&amp;mut self, total_bytes: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='struct' href='../../bittorrent/tracker/struct.AnnounceInfo.html' title='bittorrent::tracker::AnnounceInfo'>AnnounceInfo</a>&gt;;
+    fn <a href='#tymethod.update_announce' class='fnname'>update_announce</a>(&amp;mut self, total_down: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>, total_left: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>, total_up: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='struct' href='../../bittorrent/tracker/struct.AnnounceInfo.html' title='bittorrent::tracker::AnnounceInfo'>AnnounceInfo</a>&gt;;
+    fn <a href='#tymethod.stop_announce' class='fnname'>stop_announce</a>(&amp;mut self, total_down: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>, total_left: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>, total_up: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;;
+    fn <a href='#tymethod.complete_announce' class='fnname'>complete_announce</a>(&amp;mut self, total_bytes: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;;
+}</pre>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.local_ip' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.local_ip' class='fnname'>local_ip</a>(&amp;mut self) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/std/io/net/ip/enum.IpAddr.html' title='std::io::net::ip::IpAddr'>IpAddr</a>&gt;</code></h3><div class='docblock'><p>Returns the local ip address that is being used to communicate with the tracker.</p>
+</div><h3 id='tymethod.scrape' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.scrape' class='fnname'>scrape</a>(&amp;mut self) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='struct' href='../../bittorrent/tracker/struct.ScrapeInfo.html' title='bittorrent::tracker::ScrapeInfo'>ScrapeInfo</a>&gt;</code></h3><div class='docblock'><p>Returns information about the swarm for a particular torrent file without
+joining the swarm.</p>
+
+<p>This is a blocking operation.</p>
+</div><h3 id='tymethod.start_announce' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.start_announce' class='fnname'>start_announce</a>(&amp;mut self, total_bytes: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='struct' href='../../bittorrent/tracker/struct.AnnounceInfo.html' title='bittorrent::tracker::AnnounceInfo'>AnnounceInfo</a>&gt;</code></h3><div class='docblock'><p>Sends an announce request to the tracker signalling a start event. This request
+enters us into the swarm and we are required to send periodic updates as 
+specified by the tracker in order to be kept in the swarm. Periodic updates 
+should be sent with update_announce.</p>
+
+<p>This is a blocking operation.</p>
+</div><h3 id='tymethod.update_announce' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.update_announce' class='fnname'>update_announce</a>(&amp;mut self, total_down: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>, total_left: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>, total_up: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a class='struct' href='../../bittorrent/tracker/struct.AnnounceInfo.html' title='bittorrent::tracker::AnnounceInfo'>AnnounceInfo</a>&gt;</code></h3><div class='docblock'><p>Sends an announce request to the tracker signalling an update event. This request
+acts as a heartbeat so that the tracker knows we are still connected and wanting
+to be kept in the swarm.</p>
+
+<p>This is a blocking operation.</p>
+</div><h3 id='tymethod.stop_announce' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.stop_announce' class='fnname'>stop_announce</a>(&amp;mut self, total_down: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>, total_left: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>, total_up: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h3><div class='docblock'><p>Sends an announce request to the tracker signalling a stop event. This request
+exists to let the tracker know that we are gracefully shutting down and that
+it should remove us from the swarm.</p>
+
+<p>This is a blocking operation.</p>
+</div><h3 id='tymethod.complete_announce' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.complete_announce' class='fnname'>complete_announce</a>(&amp;mut self, total_bytes: <a href='http://doc.rust-lang.org/nightly/std/primitive.uint.html'>uint</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h3><div class='docblock'><p>Sends an announce request to the tracker signalling a completed event. This request
+exists to let the tracker know that we have completed our download TEST TO CHECK
+WHAT EXACTLY THIS MAKES THE TRACKER DO.</p>
+
+<p>This is a blocking operation.</p>
+</div></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><a class='stability Unmarked' title='No stability level'></a><code>impl <a class='trait' href='../../bittorrent/tracker/trait.Tracker.html' title='bittorrent::tracker::Tracker'>Tracker</a> for <a class='struct' href='../../bittorrent/tracker/udp/struct.UdpTracker.html' title='bittorrent::tracker::udp::UdpTracker'>UdpTracker</a></code></li>
+</ul><script type="text/javascript" async
+                              src="../../implementors/bittorrent/tracker/trait.Tracker.js">
+                      </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "bittorrent";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>
