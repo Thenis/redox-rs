@@ -41,10 +41,10 @@
     </nav>
 
     <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>bittorrent</a>::<wbr><a href='index.html'>error</a>::<wbr><a class='struct' href=''>ParseError</a><wbr></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>bittorrent</a>::<wbr><a href='index.html'>error</a>::<wbr><a class='struct' href=''>ParseError</a><wbr><a class='stability Unstable' title=''>Unstable</a></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-1703' href='../../src/bittorrent/error.rs.html#14-18'>[src]</a></span></h1>
+        </span><a id='src-1703' href='../../src/bittorrent/error.rs.html#16-20'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct ParseError {
     pub pos: <a href='http://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>,
     pub desc: &amp;'static <a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>,
@@ -55,7 +55,7 @@ the buffer.</p>
 <p>A pos of -1 indicates that this error was converted from another error where 
 a position value would not make sense.</p>
 </div><h2 class='fields'>Fields</h2>
-<table><tr><td id='structfield.pos'><a class='stability Unmarked' title='No stability level'></a><code>pos</code></td><td></td></tr><tr><td id='structfield.desc'><a class='stability Unmarked' title='No stability level'></a><code>desc</code></td><td></td></tr><tr><td id='structfield.detail'><a class='stability Unmarked' title='No stability level'></a><code>detail</code></td><td></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><a class='stability Unmarked' title='No stability level'></a><code>impl <a class='struct' href='../../bittorrent/error/struct.ParseError.html' title='bittorrent::error::ParseError'>ParseError</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.new' class='fnname'>new</a>(pos: <a href='http://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>, desc: &amp;'static <a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>, detail: <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>&gt;) -&gt; <a class='struct' href='../../bittorrent/error/struct.ParseError.html' title='bittorrent::error::ParseError'>ParseError</a></code></h4>
+<table><tr><td id='structfield.pos'><a class='stability Unstable' title='Unstable'></a><code>pos</code></td><td></td></tr><tr><td id='structfield.desc'><a class='stability Unstable' title='Unstable'></a><code>desc</code></td><td></td></tr><tr><td id='structfield.detail'><a class='stability Unstable' title='Unstable'></a><code>detail</code></td><td></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><a class='stability Unstable' title='Unstable'></a><code>impl <a class='struct' href='../../bittorrent/error/struct.ParseError.html' title='bittorrent::error::ParseError'>ParseError</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><a class='stability Unstable' title='Unstable'></a><code>fn <a href='#method.new' class='fnname'>new</a>(pos: <a href='http://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>, desc: &amp;'static <a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>, detail: <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>&gt;) -&gt; <a class='struct' href='../../bittorrent/error/struct.ParseError.html' title='bittorrent::error::ParseError'>ParseError</a></code></h4>
 <div class='docblock'><p>Constructs a new ParseError object where the pos information will get
 embedded within the detail value so that it is preserved when accessing
 methods via Error or when converting to another error.</p>

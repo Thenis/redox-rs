@@ -41,10 +41,10 @@
     </nav>
 
     <section id='main' class="content enum">
-<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>bittorrent</a>::<wbr><a href='index.html'>peer</a>::<wbr><a class='enum' href=''>PeerAction</a><wbr></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>bittorrent</a>::<wbr><a href='index.html'>peer</a>::<wbr><a class='enum' href=''>PeerAction</a><wbr><a class='stability Unstable' title=''>Unstable</a></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-3173' href='../../src/bittorrent/peer/mod.rs.html#31-44'>[src]</a></span></h1>
+        </span><a id='src-3173' href='../../src/bittorrent/peer/mod.rs.html#33-46'>[src]</a></span></h1>
 <pre class='rust enum'>pub enum PeerAction {
     Hidden,
     StateUpdate(<a class='enum' href='../../bittorrent/peer/state/enum.StateChange.html' title='bittorrent::peer::state::StateChange'>StateChange</a>),
@@ -55,12 +55,12 @@
 }</pre><div class='docblock'><p>Denotes an action that was carried out in response to a message received
 by a remote peer.</p>
 </div><h2 class='variants'>Variants</h2>
-<table><tr><td id='variant.Hidden'><a class='stability Unmarked' title='No stability level'></a><code>Hidden</code></td><td><div class='docblock'><p>A message was received that has been hidden from the user (not guaranteed to propagate).</p>
-</div></td></tr><tr><td id='variant.StateUpdate'><a class='stability Unmarked' title='No stability level'></a><code>StateUpdate</code></td><td><div class='docblock'><p>A state message was received: (state_change)</p>
-</div></td></tr><tr><td id='variant.StateHave'><a class='stability Unmarked' title='No stability level'></a><code>StateHave</code></td><td><div class='docblock'><p>A have message was received: (piece_index)</p>
-</div></td></tr><tr><td id='variant.DataRequested'><a class='stability Unmarked' title='No stability level'></a><code>DataRequested</code></td><td><div class='docblock'><p>A request message was received: (piece_index, block_offset, block_length)</p>
-</div></td></tr><tr><td id='variant.DataArrived'><a class='stability Unmarked' title='No stability level'></a><code>DataArrived</code></td><td><div class='docblock'><p>A piece message was received: (piece_index, block_offset, block_data)</p>
-</div></td></tr><tr><td id='variant.DataCanceled'><a class='stability Unmarked' title='No stability level'></a><code>DataCanceled</code></td><td><div class='docblock'><p>A cancel message was received: (piece_index, block_offset, block_length)</p>
+<table><tr><td id='variant.Hidden'><a class='stability Unstable' title='Unstable'></a><code>Hidden</code></td><td><div class='docblock'><p>A message was received that has been hidden from the user (not guaranteed to propagate).</p>
+</div></td></tr><tr><td id='variant.StateUpdate'><a class='stability Unstable' title='Unstable'></a><code>StateUpdate</code></td><td><div class='docblock'><p>A state message was received: (state_change)</p>
+</div></td></tr><tr><td id='variant.StateHave'><a class='stability Unstable' title='Unstable'></a><code>StateHave</code></td><td><div class='docblock'><p>A have message was received: (piece_index)</p>
+</div></td></tr><tr><td id='variant.DataRequested'><a class='stability Unstable' title='Unstable'></a><code>DataRequested</code></td><td><div class='docblock'><p>A request message was received: (piece_index, block_offset, block_length)</p>
+</div></td></tr><tr><td id='variant.DataArrived'><a class='stability Unstable' title='Unstable'></a><code>DataArrived</code></td><td><div class='docblock'><p>A piece message was received: (piece_index, block_offset, block_data)</p>
+</div></td></tr><tr><td id='variant.DataCanceled'><a class='stability Unstable' title='Unstable'></a><code>DataCanceled</code></td><td><div class='docblock'><p>A cancel message was received: (piece_index, block_offset, block_length)</p>
 </div></td></tr></table></section>
     <section id='search' class="content hidden"></section>
 

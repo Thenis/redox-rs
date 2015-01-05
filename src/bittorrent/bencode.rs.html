@@ -495,7 +495,23 @@
 <span id='453'>453</span>
 <span id='454'>454</span>
 <span id='455'>455</span>
+<span id='456'>456</span>
+<span id='457'>457</span>
+<span id='458'>458</span>
+<span id='459'>459</span>
+<span id='460'>460</span>
+<span id='461'>461</span>
+<span id='462'>462</span>
+<span id='463'>463</span>
 </pre><pre class='rust '>
+<span class='doccomment'>//! Bencode parsing and validation.</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! This module exposes a Bencode object that will take in a chunk of bytes and</span>
+<span class='doccomment'>//! check whether it is valid Bencode or not. It will then allow access to Bencode</span>
+<span class='doccomment'>//! object by mapping them to data structures for easy manipulation.</span>
+
+<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>stable</span>]</span>
+
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::{<span class='ident'>BufReader</span>, <span class='ident'>SeekCur</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>str</span>::<span class='ident'>Utf8Error</span>::{<span class='ident'>InvalidByte</span>, <span class='ident'>TooShort</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::{<span class='ident'>HashMap</span>};
@@ -521,8 +537,8 @@
 }
 
 <span class='kw'>impl</span> <span class='ident'>Bencode</span> {
-   <span class='doccomment'>/// Processes bytes as bencoded data and builds a Bencode structure to represent</span>
-   <span class='doccomment'>/// the bencoded bytes.</span>
+    <span class='doccomment'>/// Processes bytes as bencoded data and builds a Bencode structure to represent</span>
+    <span class='doccomment'>/// the bencoded bytes.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// All valid bencode will be accepted. However, any valid bencode containing </span>
     <span class='doccomment'>/// extra, unprocessed bytes at the end will be considered invalid.</span>
@@ -537,7 +553,7 @@
         <span class='ident'>result</span>
     }
     
-   <span class='doccomment'>/// Serializes the Bencode data structure back into a sequence of bytes.</span>
+    <span class='doccomment'>/// Serializes the Bencode data structure back into a sequence of bytes.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// The returned byte sequence is guaranteed to be the same byte sequence </span>
     <span class='doccomment'>/// that was initially used to build the Bencode object.</span>
