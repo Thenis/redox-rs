@@ -44,29 +44,31 @@
 <h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>bittorrent</a><wbr><a class='stability Unstable' title=''>Unstable</a></span><span class='out-of-band'><a href='stability.html'>[stability]</a> <span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-0' href='../src/bittorrent/lib.rs.html#1-78'>[src]</a></span></h1>
+        </span><a id='src-0' href='../src/bittorrent/lib.rs.html#1-80'>[src]</a></span></h1>
 <div class='docblock'>
-<h1 id="the-rust-bittorrent-library" class='section-header'><a
-                           href="#the-rust-bittorrent-library">The Rust Bittorrent Library</a></h1>
+<h1 id="rust-bittorrent-library" class='section-header'><a
+                           href="#rust-bittorrent-library">Rust Bittorrent Library</a></h1>
 <p>This library is a dependency-free implementation of the bittorrent protocol
 and related extensions. Basic primitives are provided to allow you to connect
 to a tracker and communicate with other peers within a swarm.</p>
 
 <p>The interface for the library primitives allow you to build applications that
-leverage the protocol in ways that are not just limited to bittorrent client
-usage.</p>
+leverage the protocol in a variety of ways that are not just limited to 
+bittorrent clients.</p>
 
 <h1 id="examples" class='section-header'><a
                            href="#examples">Examples</a></h1>
 <p>Lets say you just want to scrape a tracker to gather statistics on a variety
 of torrent files. This is similar to what popular torrent hosting sites use
 to provide statistics to users about how many seeders and leechers a particular
-torrent file has at the moment in real time. You can get this information easily
+torrent file has at any moment in real time. You can get this information
 with the following snippet:</p>
 <pre class='rust '>
+<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>allow</span>(<span class='ident'>unstable</span>)]</span>
+
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>bittorrent</span>;
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>crypto</span>;
- 
+
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>fs</span>::{<span class='ident'>File</span>};
 <span class='kw'>use</span> <span class='ident'>crypto</span>::<span class='ident'>sha1</span>::{<span class='ident'>Sha1</span>};
 <span class='kw'>use</span> <span class='ident'>crypto</span>::<span class='ident'>digest</span>::{<span class='ident'>Digest</span>};
@@ -78,7 +80,7 @@ with the following snippet:</p>
 <span class='kw'>fn</span> <span class='ident'>main</span>() {
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>torr_file</span> <span class='op'>=</span> <span class='ident'>File</span>::<span class='ident'>open</span>(<span class='kw-2'>&amp;</span><span class='ident'>Path</span>::<span class='ident'>new</span>(<span class='string'>&quot;tests/data/test.torrent&quot;</span>));
     <span class='kw'>let</span> <span class='ident'>torr_bytes</span> <span class='op'>=</span> <span class='ident'>torr_file</span>.<span class='ident'>read_to_end</span>().<span class='ident'>unwrap</span>();
-    <span class='kw'>let</span> <span class='ident'>ben_val</span> <span class='op'>=</span> <span class='ident'>Bencode</span>::<span class='ident'>new</span>(<span class='ident'>torr_bytes</span>.<span class='ident'>as_slice</span>()).<span class='ident'>unwrap</span>();
+    <span class='kw'>let</span> <span class='ident'>ben_val</span> <span class='op'>=</span> <span class='ident'>Bencode</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>torr_bytes</span>[]).<span class='ident'>unwrap</span>();
      
     <span class='kw'>let</span> <span class='ident'>info_dict</span> <span class='op'>=</span> <span class='ident'>ben_val</span>.<span class='ident'>dict</span>().<span class='ident'>unwrap</span>().<span class='ident'>get</span>(<span class='string'>&quot;info&quot;</span>)
         .<span class='ident'>unwrap</span>().<span class='ident'>encoded</span>();
@@ -87,7 +89,7 @@ with the following snippet:</p>
      
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>sha</span> <span class='op'>=</span> <span class='ident'>Sha1</span>::<span class='ident'>new</span>();
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>result</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='number'>20</span>];
-    <span class='ident'>sha</span>.<span class='ident'>input</span>(<span class='ident'>info_dict</span>.<span class='ident'>as_slice</span>());
+    <span class='ident'>sha</span>.<span class='ident'>input</span>(<span class='kw-2'>&amp;</span><span class='ident'>info_dict</span>[]);
     <span class='ident'>sha</span>.<span class='ident'>result</span>(<span class='ident'>result</span>.<span class='ident'>as_mut_slice</span>());
      
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>tracker</span> <span class='op'>=</span> <span class='ident'>UdpTracker</span>::<span class='ident'>new</span>(<span class='ident'>torrent</span>.<span class='ident'>announce</span>(), <span class='kw-2'>&amp;</span><span class='ident'>result</span>)
@@ -103,11 +105,11 @@ with the following snippet:</p>
 }
 </pre>
 
-<p>However, you will find utilizing all aspects of this library requires something
-like a traditional bittorrent client. In such a case, it is left up to the
-user to implement an efficient choking algorithm, peer selection heuristic/algorithm,
-as well as an end-game algorithm. All of these are required in order to be
-competitive with commercial client implementations.</p>
+<p>This is just a simple example, and if you are going to implement a full bittorrent
+client using this library, you will have to do a bit more work. For example,
+you are going to want to implement an efficient choking algorithm, some peer 
+selection heuristics, as well as an end-game algorithm. All of these are required 
+in order to be competitive with commercial client implementations.</p>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                     <tr>
