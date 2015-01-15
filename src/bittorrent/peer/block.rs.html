@@ -134,7 +134,7 @@
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>data_storage</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='ident'>capacity</span> <span class='kw'>as</span> <span class='ident'>usize</span>);
         
         <span class='comment'>// Changing Vector&#39;s Length Equal To It&#39;s Capacity Should Be Safe</span>
-        <span class='kw'>unsafe</span>{ <span class='ident'>data_storage</span>.<span class='ident'>set_len</span>(<span class='ident'>capacity</span> <span class='kw'>as</span> <span class='ident'>usize</span>) }
+        <span class='kw'>unsafe</span>{ <span class='ident'>data_storage</span>.<span class='ident'>set_len</span>(<span class='ident'>capacity</span> <span class='kw'>as</span> <span class='ident'>usize</span>); }
         
         <span class='ident'>Block</span>{ <span class='ident'>data</span>: <span class='ident'>data_storage</span>, <span class='ident'>active</span>: <span class='boolval'>false</span>, 
             <span class='ident'>piece_index</span>: <span class='op'>-</span><span class='number'>1</span>, <span class='ident'>block_offset</span>: <span class='op'>-</span><span class='number'>1</span>, <span class='ident'>block_len</span>: <span class='op'>-</span><span class='number'>1</span> }
