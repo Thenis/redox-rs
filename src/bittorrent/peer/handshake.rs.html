@@ -293,25 +293,57 @@
 <span id="251">251</span>
 <span id="252">252</span>
 <span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Establishing a secure connection with a peer.</span>
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::{<span class='ident'>BufReader</span>, <span class='ident'>BufWriter</span>, <span class='ident'>BufferedStream</span>, <span class='ident'>IoResult</span>, <span class='ident'>IoError</span>, <span class='ident'>Closed</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>default</span>::{<span class='ident'>Default</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>path</span>::{<span class='ident'>BytesContainer</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>tcp</span>::{<span class='ident'>TcpStream</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>ip</span>::{<span class='ident'>SocketAddr</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>net</span>::<span class='ident'>ip</span>::{<span class='ident'>ToSocketAddr</span>};
 
 <span class='kw'>use</span> <span class='ident'>peer</span>::{<span class='ident'>Peer</span>};
-<span class='kw'>use</span> <span class='ident'>util</span>::{<span class='self'>self</span>, <span class='ident'>SPeerID</span>, <span class='ident'>UPeerID</span>, <span class='ident'>UInfoHash</span>, <span class='ident'>UBTP10</span>, <span class='ident'>Choice</span>};
+<span class='kw'>use</span> <span class='ident'>types</span>::{<span class='self'>self</span>, <span class='ident'>PeerID</span>, <span class='ident'>InfoHash</span>};
+<span class='kw'>use</span> <span class='ident'>util</span>::{<span class='ident'>Choice</span>};
 
-<span class='comment'>// TODO: Need To Add A One Time Check Somewhere That This Is Valid ASCII</span>
+<span class='kw'>const</span> <span class='ident'>BTP_10_PROTOCOL_LEN</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>19</span>;
 <span class='kw'>const</span> <span class='ident'>BTP_10_PROTOCOL</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span> <span class='op'>=</span> <span class='string'>&quot;BitTorrent protocol&quot;</span>;
+
 <span class='kw'>const</span> <span class='ident'>BTP_10_HANDSHAKE_LEN</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>68</span>;
 
 <span class='doccomment'>/// A struct representing a handshake that has successfully taken place.</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Handshake</span> {
-    <span class='ident'>conn</span>: <span class='ident'>TcpStream</span>,
-    <span class='ident'>remote_id</span>: <span class='ident'>SPeerID</span>
+    <span class='ident'>conn</span>:      <span class='ident'>TcpStream</span>,
+    <span class='ident'>remote_id</span>: <span class='ident'>PeerID</span>
 }
 
 <span class='doccomment'>/// The entry point for connecting with remote peers.</span>
@@ -321,16 +353,16 @@
     <span class='doccomment'>/// us a peer id that we are already using, the handshake will fail.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// This is a blocking operation.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>initiate</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>(<span class='ident'>recipient</span>: <span class='ident'>SocketAddr</span>, <span class='ident'>info</span>: <span class='kw-2'>&amp;</span><span class='ident'>UInfoHash</span>, <span class='ident'>curr_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>UPeerID</span>, <span class='ident'>valid</span>: <span class='ident'>T</span>) 
-        <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>Handshake</span><span class='op'>&gt;</span> <span class='kw'>where</span> <span class='ident'>T</span>: <span class='kw'>for</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>Fn</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>UPeerID</span>,), <span class='ident'>bool</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>conn</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>TcpStream</span>::<span class='ident'>connect</span>(<span class='ident'>recipient</span>));
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>initiate</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>S</span><span class='op'>&gt;</span>(<span class='ident'>recipient</span>: <span class='ident'>S</span>, <span class='ident'>info</span>: <span class='kw-2'>&amp;</span><span class='ident'>InfoHash</span>, <span class='ident'>curr_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerID</span>, <span class='ident'>valid_peer_id</span>: <span class='ident'>T</span>) 
+        <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>Handshake</span><span class='op'>&gt;</span> <span class='kw'>where</span> <span class='ident'>T</span>: <span class='kw'>for</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>Fn</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>PeerID</span>,), <span class='ident'>bool</span><span class='op'>&gt;</span>, <span class='ident'>S</span>: <span class='ident'>ToSocketAddr</span> {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>conn</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>TcpStream</span>::<span class='ident'>connect</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>recipient</span>.<span class='ident'>to_socket_addr</span>())));
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>handshake</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='ident'>BTP_10_HANDSHAKE_LEN</span>];
         
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>handshake</span>, <span class='ident'>BTP_10_PROTOCOL</span>.<span class='ident'>as_bytes</span>(), <span class='ident'>info</span>, <span class='ident'>curr_id</span>));
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>handshake</span>, <span class='ident'>BTP_10_PROTOCOL</span>, <span class='ident'>info</span>, <span class='ident'>curr_id</span>));
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>conn</span>.<span class='ident'>write</span>(<span class='kw-2'>&amp;</span><span class='ident'>handshake</span>));
         
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>conn</span>.<span class='ident'>read_at_least</span>(<span class='ident'>handshake</span>.<span class='ident'>len</span>(), <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>handshake</span>));
-        <span class='kw'>let</span> <span class='ident'>peer_id</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>Handshake</span>::<span class='ident'>verify_handshake</span>(<span class='kw-2'>&amp;</span><span class='ident'>handshake</span>, <span class='ident'>BTP_10_PROTOCOL</span>.<span class='ident'>as_bytes</span>(), <span class='ident'>info</span>, <span class='ident'>valid</span>));
+        <span class='kw'>let</span> <span class='ident'>peer_id</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>Handshake</span>::<span class='ident'>verify_handshake</span>(<span class='kw-2'>&amp;</span><span class='ident'>handshake</span>, <span class='ident'>BTP_10_PROTOCOL</span>, <span class='ident'>info</span>, <span class='ident'>valid_peer_id</span>));
         
         <span class='prelude-val'>Ok</span>(<span class='ident'>Handshake</span>{ <span class='ident'>conn</span>: <span class='ident'>conn</span>,
             <span class='ident'>remote_id</span>: <span class='ident'>peer_id</span> }
@@ -340,14 +372,14 @@
     <span class='doccomment'>/// Completes a handshake that was initiated by the remote peer. If the handshake initiated</span>
     <span class='doccomment'>/// by the peer is malformed, the peer sent us a different info hash, or the peer sent us a</span>
     <span class='doccomment'>/// peer id that we are already using, the handshake will fail.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>complete</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>(<span class='kw-2'>mut</span> <span class='ident'>initiater</span>: <span class='ident'>TcpStream</span>, <span class='ident'>info</span>: <span class='kw-2'>&amp;</span><span class='ident'>UInfoHash</span>, <span class='ident'>curr_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>UPeerID</span>, <span class='ident'>valid</span>: <span class='ident'>T</span>)
-        <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>Handshake</span><span class='op'>&gt;</span> <span class='kw'>where</span> <span class='ident'>T</span>: <span class='kw'>for</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>Fn</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>UPeerID</span>,), <span class='ident'>bool</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>complete</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>(<span class='kw-2'>mut</span> <span class='ident'>initiater</span>: <span class='ident'>TcpStream</span>, <span class='ident'>info</span>: <span class='kw-2'>&amp;</span><span class='ident'>InfoHash</span>, <span class='ident'>curr_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerID</span>, <span class='ident'>valid</span>: <span class='ident'>T</span>)
+        <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>Handshake</span><span class='op'>&gt;</span> <span class='kw'>where</span> <span class='ident'>T</span>: <span class='kw'>for</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>Fn</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>PeerID</span>,), <span class='ident'>bool</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>handshake</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='ident'>BTP_10_HANDSHAKE_LEN</span>];
         
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>initiater</span>.<span class='ident'>read_at_least</span>(<span class='ident'>handshake</span>.<span class='ident'>len</span>(), <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>handshake</span>));
-        <span class='kw'>let</span> <span class='ident'>peer_id</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>Handshake</span>::<span class='ident'>verify_handshake</span>(<span class='kw-2'>&amp;</span><span class='ident'>handshake</span>, <span class='ident'>BTP_10_PROTOCOL</span>.<span class='ident'>as_bytes</span>(), <span class='ident'>info</span>, <span class='ident'>valid</span>));
+        <span class='kw'>let</span> <span class='ident'>peer_id</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>Handshake</span>::<span class='ident'>verify_handshake</span>(<span class='kw-2'>&amp;</span><span class='ident'>handshake</span>, <span class='ident'>BTP_10_PROTOCOL</span>, <span class='ident'>info</span>, <span class='ident'>valid</span>));
         
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>handshake</span>, <span class='ident'>BTP_10_PROTOCOL</span>.<span class='ident'>as_bytes</span>(), <span class='ident'>info</span>, <span class='ident'>curr_id</span>));
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>handshake</span>, <span class='ident'>BTP_10_PROTOCOL</span>, <span class='ident'>info</span>, <span class='ident'>curr_id</span>));
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>initiater</span>.<span class='ident'>write</span>(<span class='kw-2'>&amp;</span><span class='ident'>handshake</span>));
         
         <span class='prelude-val'>Ok</span>(<span class='ident'>Handshake</span>{ <span class='ident'>conn</span>: <span class='ident'>initiater</span>,
@@ -365,54 +397,64 @@
             <span class='ident'>remote_pieces</span>: <span class='ident'>Choice</span>::<span class='ident'>Two</span>(<span class='ident'>num_pieces</span>) }
     }
     
-    <span class='kw'>fn</span> <span class='ident'>verify_handshake</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>(<span class='ident'>bytes</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>], <span class='ident'>curr_prot</span>: <span class='kw-2'>&amp;</span><span class='ident'>UBTP10</span>, <span class='ident'>info</span>: <span class='kw-2'>&amp;</span><span class='ident'>UInfoHash</span>, <span class='ident'>valid</span>: <span class='ident'>T</span>)
-        <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>SPeerID</span><span class='op'>&gt;</span> <span class='kw'>where</span> <span class='ident'>T</span>: <span class='kw'>for</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>Fn</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>UPeerID</span>,), <span class='ident'>bool</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>verify_handshake</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>(<span class='ident'>bytes</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>], <span class='ident'>curr_prot</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>info</span>: <span class='kw-2'>&amp;</span><span class='ident'>InfoHash</span>, <span class='ident'>valid_peer_id</span>: <span class='ident'>T</span>)
+        <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span><span class='ident'>PeerID</span><span class='op'>&gt;</span> <span class='kw'>where</span> <span class='ident'>T</span>: <span class='kw'>for</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>Fn</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>PeerID</span>,), <span class='ident'>bool</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buf</span> <span class='op'>=</span> <span class='ident'>BufReader</span>::<span class='ident'>new</span>(<span class='ident'>bytes</span>);
         
-        <span class='kw'>let</span> <span class='ident'>remote_length</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>read_u8</span>());
-        <span class='kw'>if</span> <span class='ident'>remote_length</span> <span class='kw'>as</span> <span class='ident'>usize</span> <span class='op'>!=</span> <span class='ident'>curr_prot</span>.<span class='ident'>len</span>() {
-            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>IoError</span>{ <span class='ident'>kind</span>: <span class='ident'>Closed</span>, <span class='ident'>desc</span>: <span class='string'>&quot;Invalid Handshake Length&quot;</span>, <span class='ident'>detail</span>: <span class='prelude-val'>None</span> })
+        <span class='comment'>// Verify Handshake Length</span>
+        <span class='kw'>let</span> <span class='ident'>remote_length</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>read_u8</span>()) <span class='kw'>as</span> <span class='ident'>usize</span>;
+        <span class='kw'>if</span> <span class='ident'>remote_length</span> <span class='op'>!=</span> <span class='ident'>curr_prot</span>.<span class='ident'>len</span>() {
+            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>IoError</span>{ <span class='ident'>kind</span>: <span class='ident'>Closed</span>, <span class='ident'>desc</span>: <span class='string'>&quot;Handshake Length Not Recognized&quot;</span>, <span class='ident'>detail</span>: <span class='prelude-val'>None</span> })
         }
         
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>remote_prot</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='ident'>util</span>::<span class='ident'>BTP_10_LEN</span>];
+        <span class='comment'>// Verify Protocol</span>
+        <span class='kw'>let</span> <span class='ident'>local_prot</span> <span class='op'>=</span> <span class='ident'>curr_prot</span>.<span class='ident'>as_bytes</span>();
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>remote_prot</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='ident'>BTP_10_PROTOCOL_LEN</span>];
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>read_at_least</span>(<span class='ident'>remote_prot</span>.<span class='ident'>len</span>(), <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>remote_prot</span>));
-        <span class='kw'>for</span> (<span class='kw-2'>&amp;</span><span class='ident'>rem</span>, <span class='kw-2'>&amp;</span><span class='ident'>cur</span>) <span class='kw'>in</span> <span class='ident'>remote_prot</span>.<span class='ident'>iter</span>().<span class='ident'>zip</span>(<span class='ident'>curr_prot</span>.<span class='ident'>iter</span>()) {
-            <span class='kw'>if</span> <span class='ident'>rem</span> <span class='op'>!=</span> <span class='ident'>cur</span> {
-                <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>IoError</span>{ <span class='ident'>kind</span>: <span class='ident'>Closed</span>, <span class='ident'>desc</span>: <span class='string'>&quot;Different Protocols In Use&quot;</span>, <span class='ident'>detail</span>: <span class='prelude-val'>None</span> })
-            }
+        <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>remote_prot</span>.<span class='ident'>iter</span>().<span class='ident'>zip</span>(<span class='ident'>local_prot</span>.<span class='ident'>iter</span>()).<span class='ident'>all</span>(<span class='op'>|</span>(<span class='ident'>a</span>,<span class='ident'>b</span>)<span class='op'>|</span> <span class='ident'>a</span> <span class='op'>==</span> <span class='ident'>b</span>) {
+            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>IoError</span>{ <span class='ident'>kind</span>: <span class='ident'>Closed</span>, <span class='ident'>desc</span>: <span class='string'>&quot;Different Protocols In Use&quot;</span>, <span class='ident'>detail</span>: <span class='prelude-val'>None</span> })
         }
         
         <span class='comment'>// Reserved Bytes</span>
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>read_be_u64</span>());
         
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>remote_info</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='ident'>util</span>::<span class='ident'>INFO_HASH_LEN</span>];
+        <span class='comment'>// Verify InfoHash</span>
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>remote_info</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='ident'>types</span>::<span class='ident'>INFO_HASH_LEN</span>];
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>read_at_least</span>(<span class='ident'>remote_info</span>.<span class='ident'>len</span>(), <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>remote_info</span>));
-        <span class='kw'>for</span> (<span class='ident'>rem</span>, <span class='ident'>inf</span>) <span class='kw'>in</span> <span class='ident'>remote_info</span>.<span class='ident'>iter</span>().<span class='ident'>zip</span>(<span class='ident'>info</span>.<span class='ident'>iter</span>()) {
-            <span class='kw'>if</span> <span class='ident'>rem</span> <span class='op'>!=</span> <span class='ident'>inf</span> {
-               <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>IoError</span>{ <span class='ident'>kind</span>: <span class='ident'>Closed</span>, <span class='ident'>desc</span>: <span class='string'>&quot;Different Info Hash In Use&quot;</span>, <span class='ident'>detail</span>: <span class='prelude-val'>None</span> }) 
-            }
+        <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>info</span>.<span class='ident'>as_slice</span>().<span class='ident'>iter</span>().<span class='ident'>zip</span>(<span class='ident'>remote_info</span>.<span class='ident'>iter</span>()).<span class='ident'>all</span>(<span class='op'>|</span>(<span class='ident'>a</span>,<span class='ident'>b</span>)<span class='op'>|</span> <span class='ident'>a</span> <span class='op'>==</span> <span class='ident'>b</span>) {
+            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>IoError</span>{ <span class='ident'>kind</span>: <span class='ident'>Closed</span>, <span class='ident'>desc</span>: <span class='string'>&quot;Different Info Hash In Use&quot;</span>, <span class='ident'>detail</span>: <span class='prelude-val'>None</span> })
         }
         
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>peer_id</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='ident'>util</span>::<span class='ident'>PEER_ID_LEN</span>];
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>read_at_least</span>(<span class='ident'>util</span>::<span class='ident'>PEER_ID_LEN</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>peer_id</span>));
-        <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>valid</span>(<span class='ident'>peer_id</span>.<span class='ident'>as_slice</span>()) {
-            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>IoError</span>{ <span class='ident'>kind</span>: <span class='ident'>Closed</span>, <span class='ident'>desc</span>: <span class='string'>&quot;Current Peer ID In Use&quot;</span>, <span class='ident'>detail</span>: <span class='prelude-val'>None</span> })
+        <span class='comment'>// Try To Convert Bytes To String Slice</span>
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>peer_id_bytes</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='ident'>types</span>::<span class='ident'>PEER_ID_LEN</span>];
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>read_at_least</span>(<span class='ident'>peer_id_bytes</span>.<span class='ident'>len</span>(), <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>peer_id_bytes</span>));
+        <span class='kw'>let</span> <span class='ident'>peer_id_str</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>peer_id_bytes</span>.<span class='ident'>as_slice</span>().<span class='ident'>container_as_str</span>().<span class='ident'>ok_or</span>(
+            <span class='ident'>IoError</span>{ <span class='ident'>kind</span>: <span class='ident'>Closed</span>, <span class='ident'>desc</span>: <span class='string'>&quot;Remote Peer ID Is Not Valid UTF-8&quot;</span>, <span class='ident'>detail</span>: <span class='prelude-val'>None</span> }
+        ));
+        
+        <span class='comment'>// Verify PeerID</span>
+        <span class='kw'>let</span> <span class='ident'>peer_id</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>PeerID</span>::<span class='ident'>from_str</span>(<span class='ident'>peer_id_str</span>).<span class='ident'>ok_or</span>(
+            <span class='ident'>IoError</span>{ <span class='ident'>kind</span>: <span class='ident'>Closed</span>, <span class='ident'>desc</span>: <span class='string'>&quot;Remote Peer ID Is Not Valid UTF-8&quot;</span>, <span class='ident'>detail</span>: <span class='prelude-val'>None</span> }
+        ));
+        <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>valid_peer_id</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>) {
+            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>IoError</span>{ <span class='ident'>kind</span>: <span class='ident'>Closed</span>, <span class='ident'>desc</span>: <span class='string'>&quot;Remote Peer ID In Use&quot;</span>, <span class='ident'>detail</span>: <span class='prelude-val'>None</span> })
         }
         
         <span class='prelude-val'>Ok</span>(<span class='ident'>peer_id</span>)
     }
     
-    <span class='kw'>fn</span> <span class='ident'>write_handshake</span>(<span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>u8</span>], <span class='ident'>curr_prot</span>: <span class='kw-2'>&amp;</span><span class='ident'>UBTP10</span>, <span class='ident'>info</span>: <span class='kw-2'>&amp;</span><span class='ident'>UInfoHash</span>, <span class='ident'>curr_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>UPeerID</span>) <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>write_handshake</span>(<span class='ident'>buf</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>u8</span>], <span class='ident'>curr_prot</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>info</span>: <span class='kw-2'>&amp;</span><span class='ident'>InfoHash</span>, <span class='ident'>curr_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerID</span>)
+        <span class='op'>-&gt;</span> <span class='ident'>IoResult</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buf</span> <span class='op'>=</span> <span class='ident'>BufWriter</span>::<span class='ident'>new</span>(<span class='ident'>buf</span>);
         
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>write_u8</span>(<span class='ident'>curr_prot</span>.<span class='ident'>len</span>() <span class='kw'>as</span> <span class='ident'>u8</span>));
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>write</span>(<span class='ident'>curr_prot</span>));
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>write_str</span>(<span class='ident'>curr_prot</span>));
         
         <span class='comment'>// Reserved Bytes</span>
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>write</span>([<span class='number'>0u8</span>; <span class='number'>8</span>].<span class='ident'>as_slice</span>()));
         
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>write</span>(<span class='ident'>info</span>));
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>write</span>(<span class='ident'>curr_id</span>));
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>write</span>(<span class='ident'>info</span>.<span class='ident'>as_slice</span>()));
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>buf</span>.<span class='ident'>write</span>(<span class='ident'>curr_id</span>.<span class='ident'>as_slice</span>()));
         
         <span class='prelude-val'>Ok</span>(())
     }
@@ -420,20 +462,34 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
+    <span class='kw'>use</span> <span class='ident'>types</span>::{<span class='ident'>PeerID</span>, <span class='ident'>InfoHash</span>};
     <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>path</span>::{<span class='ident'>BytesContainer</span>};
     <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::{<span class='ident'>BufReader</span>};
     <span class='kw'>use</span> <span class='ident'>super</span>::{<span class='ident'>Handshake</span>, <span class='ident'>BTP_10_PROTOCOL</span>, <span class='ident'>BTP_10_HANDSHAKE_LEN</span>};
 
-    <span class='kw'>const</span> <span class='ident'>VALID_INFO_HASH_ONE</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> [<span class='ident'>u8</span>] <span class='op'>=</span> <span class='string'>b&quot;\xcf\x23\xdf\x22\x07\xd9\x9a\x74\xfb\xe1\x69\xe3\xeb\xa0\x35\xe6\x33\xb6\x5d\x94&quot;</span>;
-    <span class='kw'>const</span> <span class='ident'>VALID_INFO_HASH_TWO</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> [<span class='ident'>u8</span>] <span class='op'>=</span> <span class='string'>b&quot;\xd0\xd1\x4c\x92\x6e\x6e\x99\x76\x1a\x2f\xdc\xff\x27\xb4\x03\xd9\x63\x76\xef\xf6&quot;</span>;
+    <span class='kw'>fn</span> <span class='ident'>valid_peer_id</span>() <span class='op'>-&gt;</span> <span class='ident'>PeerID</span> {
+        <span class='kw'>const</span> <span class='ident'>VALID_PEER_ID</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span> <span class='op'>=</span> <span class='string'>&quot;bittorrent-rs_a52dez&quot;</span>;
+        
+        <span class='ident'>PeerID</span>::<span class='ident'>from_str</span>(<span class='ident'>VALID_PEER_ID</span>).<span class='ident'>unwrap</span>()
+    }
     
-    <span class='kw'>const</span> <span class='ident'>VALID_PEER_ID</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> [<span class='ident'>u8</span>] <span class='op'>=</span> <span class='string'>b&quot;bittorrent-rs_a52dez&quot;</span>;
+    <span class='kw'>fn</span> <span class='ident'>valid_info_hash_one</span>() <span class='op'>-&gt;</span> <span class='ident'>InfoHash</span> {
+        <span class='kw'>const</span> <span class='ident'>VALID_INFO_HASH_ONE</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> [<span class='ident'>u8</span>] <span class='op'>=</span> <span class='string'>b&quot;\xcf\x23\xdf\x22\x07\xd9\x9a\x74\xfb\xe1\x69\xe3\xeb\xa0\x35\xe6\x33\xb6\x5d\x94&quot;</span>;
+        
+        <span class='ident'>InfoHash</span>::<span class='ident'>from_bytes</span>(<span class='ident'>VALID_INFO_HASH_ONE</span>).<span class='ident'>unwrap</span>()
+    }
+    
+    <span class='kw'>fn</span> <span class='ident'>valid_info_hash_two</span>() <span class='op'>-&gt;</span> <span class='ident'>InfoHash</span> {
+        <span class='kw'>const</span> <span class='ident'>VALID_INFO_HASH_TWO</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> [<span class='ident'>u8</span>] <span class='op'>=</span> <span class='string'>b&quot;\xd0\xd1\x4c\x92\x6e\x6e\x99\x76\x1a\x2f\xdc\xff\x27\xb4\x03\xd9\x63\x76\xef\xf6&quot;</span>;
+        
+        <span class='ident'>InfoHash</span>::<span class='ident'>from_bytes</span>(<span class='ident'>VALID_INFO_HASH_TWO</span>).<span class='ident'>unwrap</span>()
+    }
     
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>positive_write_handshake</span>() {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buffer</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='ident'>BTP_10_HANDSHAKE_LEN</span>];
-        <span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_mut_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>.<span class='ident'>as_bytes</span>(),
-            <span class='ident'>VALID_INFO_HASH_ONE</span>, <span class='ident'>VALID_PEER_ID</span>)
+        <span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_mut_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>valid_info_hash_one</span>(), <span class='kw-2'>&amp;</span><span class='ident'>valid_peer_id</span>())
         .<span class='ident'>unwrap</span>();
         
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buf_reader</span> <span class='op'>=</span> <span class='ident'>BufReader</span>::<span class='ident'>new</span>(<span class='ident'>buffer</span>.<span class='ident'>as_slice</span>());
@@ -449,16 +505,14 @@
         
         <span class='ident'>buf_reader</span>.<span class='ident'>read_exact</span>(<span class='number'>8</span>).<span class='ident'>unwrap</span>();
         
-        <span class='kw'>for</span> <span class='kw-2'>&amp;</span><span class='ident'>i</span> <span class='kw'>in</span> <span class='ident'>VALID_INFO_HASH_ONE</span>.<span class='ident'>iter</span>() {
-            <span class='kw'>if</span> <span class='ident'>i</span> <span class='op'>!=</span> <span class='ident'>buf_reader</span>.<span class='ident'>read_u8</span>().<span class='ident'>unwrap</span>() {
-                <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Write Failed For Info Hash&quot;</span>)
-            }
+        <span class='kw'>let</span> <span class='ident'>info_hash</span> <span class='op'>=</span> <span class='ident'>valid_info_hash_one</span>();
+        <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>info_hash</span>.<span class='ident'>as_slice</span>().<span class='ident'>iter</span>().<span class='ident'>all</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>a</span><span class='op'>|</span> <span class='ident'>buf_reader</span>.<span class='ident'>read_u8</span>().<span class='ident'>unwrap</span>() <span class='op'>==</span> <span class='ident'>a</span>) {
+            <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Write Failed For Info Hash&quot;</span>)
         }
         
-        <span class='kw'>for</span> <span class='kw-2'>&amp;</span><span class='ident'>i</span> <span class='kw'>in</span> <span class='ident'>VALID_PEER_ID</span>.<span class='ident'>iter</span>() {
-            <span class='kw'>if</span> <span class='ident'>i</span> <span class='op'>!=</span> <span class='ident'>buf_reader</span>.<span class='ident'>read_u8</span>().<span class='ident'>unwrap</span>() {
-                <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Write Failed For Peer ID&quot;</span>)
-            }
+        <span class='kw'>let</span> <span class='ident'>peer_id</span> <span class='op'>=</span> <span class='ident'>valid_peer_id</span>();
+        <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>peer_id</span>.<span class='ident'>as_slice</span>().<span class='ident'>iter</span>().<span class='ident'>all</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>a</span><span class='op'>|</span> <span class='ident'>buf_reader</span>.<span class='ident'>read_u8</span>().<span class='ident'>unwrap</span>() <span class='op'>==</span> <span class='ident'>a</span>) {
+            <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Write Failed For Peer ID&quot;</span>)
         }
         
         <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>buf_reader</span>.<span class='ident'>eof</span>() {
@@ -470,22 +524,26 @@
     <span class='attribute'>#[<span class='ident'>should_fail</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>negative_write_handshake_buffer_too_small</span>() {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buffer</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='number'>1</span>];
-        <span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_mut_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>.<span class='ident'>as_bytes</span>(),
-            <span class='ident'>VALID_INFO_HASH_ONE</span>, <span class='ident'>VALID_PEER_ID</span>)
+        <span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_mut_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>valid_info_hash_one</span>(), <span class='kw-2'>&amp;</span><span class='ident'>valid_peer_id</span>())
         .<span class='ident'>unwrap</span>();
     }
     
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>positive_verify_handshake</span>() {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buffer</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='ident'>BTP_10_HANDSHAKE_LEN</span>];
-        <span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_mut_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>.<span class='ident'>as_bytes</span>(),
-            <span class='ident'>VALID_INFO_HASH_ONE</span>, <span class='ident'>VALID_PEER_ID</span>)
+        <span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_mut_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>valid_info_hash_one</span>(), <span class='kw-2'>&amp;</span><span class='ident'>valid_peer_id</span>())
         .<span class='ident'>unwrap</span>();
         
         <span class='comment'>// In closure, just check to make sure our peer id was checked</span>
-        <span class='ident'>Handshake</span>::<span class='ident'>verify_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>.<span class='ident'>as_bytes</span>(),
-            <span class='ident'>VALID_INFO_HASH_ONE</span>, <span class='op'>|</span><span class='kw-2'>&amp;</span>: <span class='ident'>remote_id</span><span class='op'>|</span> {
-            <span class='ident'>VALID_PEER_ID</span>.<span class='ident'>len</span>() <span class='op'>==</span> <span class='ident'>remote_id</span>.<span class='ident'>len</span>() <span class='op'>&amp;&amp;</span> <span class='ident'>remote_id</span>.<span class='ident'>iter</span>().<span class='ident'>zip</span>(<span class='ident'>VALID_PEER_ID</span>.<span class='ident'>iter</span>()).<span class='ident'>all</span>(<span class='op'>|</span>(<span class='ident'>a</span>, <span class='ident'>b</span>)<span class='op'>|</span> <span class='ident'>a</span> <span class='op'>==</span> <span class='ident'>b</span>)
+        <span class='kw'>let</span> <span class='ident'>local_id</span> <span class='op'>=</span> <span class='ident'>valid_peer_id</span>();
+        <span class='ident'>Handshake</span>::<span class='ident'>verify_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>valid_info_hash_one</span>(), <span class='op'>|</span><span class='kw-2'>&amp;</span>: <span class='ident'>remote_id</span><span class='op'>|</span> {
+                <span class='kw'>let</span> (<span class='ident'>local_slice</span>, <span class='ident'>remote_slice</span>) <span class='op'>=</span> (<span class='ident'>local_id</span>.<span class='ident'>as_slice</span>(), <span class='ident'>remote_id</span>.<span class='ident'>as_slice</span>());
+            
+                <span class='ident'>local_slice</span>.<span class='ident'>len</span>() <span class='op'>==</span> <span class='ident'>remote_slice</span>.<span class='ident'>len</span>() <span class='op'>&amp;&amp;</span> 
+                <span class='ident'>remote_slice</span>.<span class='ident'>iter</span>().<span class='ident'>zip</span>(<span class='ident'>local_slice</span>.<span class='ident'>iter</span>()).<span class='ident'>all</span>(<span class='op'>|</span>(<span class='kw-2'>&amp;</span><span class='ident'>a</span>,<span class='kw-2'>&amp;</span><span class='ident'>b</span>)<span class='op'>|</span> <span class='ident'>a</span> <span class='op'>==</span> <span class='ident'>b</span>)
         }).<span class='ident'>unwrap</span>();
     }
     
@@ -493,13 +551,13 @@
     <span class='attribute'>#[<span class='ident'>should_fail</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>negative_verify_handshake_invalid_peer_id</span>() {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buffer</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='ident'>BTP_10_HANDSHAKE_LEN</span>];
-        <span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_mut_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>.<span class='ident'>as_bytes</span>(),
-            <span class='ident'>VALID_INFO_HASH_ONE</span>, <span class='ident'>VALID_PEER_ID</span>)
+        <span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_mut_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>valid_info_hash_one</span>(), <span class='kw-2'>&amp;</span><span class='ident'>valid_peer_id</span>())
         .<span class='ident'>unwrap</span>();
         
         <span class='comment'>// In closure, just check to make sure our peer id was checked</span>
-        <span class='ident'>Handshake</span>::<span class='ident'>verify_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>.<span class='ident'>as_bytes</span>(),
-            <span class='ident'>VALID_INFO_HASH_ONE</span>, <span class='op'>|</span><span class='kw-2'>&amp;</span>: _<span class='op'>|</span> <span class='boolval'>false</span>)
+        <span class='ident'>Handshake</span>::<span class='ident'>verify_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>valid_info_hash_one</span>(), <span class='op'>|</span><span class='kw-2'>&amp;</span>: _<span class='op'>|</span> <span class='boolval'>false</span>)
         .<span class='ident'>unwrap</span>();
     }
     
@@ -507,13 +565,13 @@
     <span class='attribute'>#[<span class='ident'>should_fail</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>negative_verify_handshake_invalid_info_hash</span>() {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buffer</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='ident'>BTP_10_HANDSHAKE_LEN</span>];
-        <span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_mut_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>.<span class='ident'>as_bytes</span>(),
-            <span class='ident'>VALID_INFO_HASH_ONE</span>, <span class='ident'>VALID_PEER_ID</span>)
+        <span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_mut_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>valid_info_hash_one</span>(), <span class='kw-2'>&amp;</span><span class='ident'>valid_peer_id</span>())
         .<span class='ident'>unwrap</span>();
         
         <span class='comment'>// In closure, just check to make sure our peer id was checked</span>
-        <span class='ident'>Handshake</span>::<span class='ident'>verify_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>.<span class='ident'>as_bytes</span>(),
-            <span class='ident'>VALID_INFO_HASH_TWO</span>, <span class='op'>|</span><span class='kw-2'>&amp;</span>: _<span class='op'>|</span> <span class='boolval'>true</span>)
+        <span class='ident'>Handshake</span>::<span class='ident'>verify_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>valid_info_hash_two</span>(), <span class='op'>|</span><span class='kw-2'>&amp;</span>: _<span class='op'>|</span> <span class='boolval'>true</span>)
         .<span class='ident'>unwrap</span>();
     }
     
@@ -522,13 +580,13 @@
     <span class='kw'>fn</span> <span class='ident'>negative_verify_handshake_diff_protocol</span>() {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buffer</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='ident'>BTP_10_HANDSHAKE_LEN</span>];
         <span class='kw'>let</span> <span class='ident'>same_len_protocol</span> <span class='op'>=</span> <span class='string'>&quot;81tt0rr3nt pr0t0c01&quot;</span>;
-        <span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_mut_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>.<span class='ident'>as_bytes</span>(),
-            <span class='ident'>VALID_INFO_HASH_ONE</span>, <span class='ident'>VALID_PEER_ID</span>)
+        <span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_mut_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>valid_info_hash_one</span>(), <span class='kw-2'>&amp;</span><span class='ident'>valid_peer_id</span>())
         .<span class='ident'>unwrap</span>();
         
         <span class='comment'>// In closure, just check to make sure our peer id was checked</span>
-        <span class='ident'>Handshake</span>::<span class='ident'>verify_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_slice</span>(), <span class='ident'>same_len_protocol</span>.<span class='ident'>as_bytes</span>(),
-            <span class='ident'>VALID_INFO_HASH_ONE</span>, <span class='op'>|</span><span class='kw-2'>&amp;</span>: _<span class='op'>|</span> <span class='boolval'>true</span> )
+        <span class='ident'>Handshake</span>::<span class='ident'>verify_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_slice</span>(), <span class='ident'>same_len_protocol</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>valid_info_hash_one</span>(), <span class='op'>|</span><span class='kw-2'>&amp;</span>: _<span class='op'>|</span> <span class='boolval'>true</span> )
         .<span class='ident'>unwrap</span>();
     }
     
@@ -537,13 +595,13 @@
     <span class='kw'>fn</span> <span class='ident'>negative_verify_handshake_diff_protocol_len</span>() {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buffer</span> <span class='op'>=</span> [<span class='number'>0u8</span>; <span class='ident'>BTP_10_HANDSHAKE_LEN</span>];
         <span class='kw'>let</span> <span class='ident'>different_len_protocol</span> <span class='op'>=</span> <span class='string'>&quot;Bittorrent protocol in Rust!!!&quot;</span>;
-        <span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_mut_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>.<span class='ident'>as_bytes</span>(),
-            <span class='ident'>VALID_INFO_HASH_ONE</span>, <span class='ident'>VALID_PEER_ID</span>)
+        <span class='ident'>Handshake</span>::<span class='ident'>write_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_mut_slice</span>(), <span class='ident'>BTP_10_PROTOCOL</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>valid_info_hash_one</span>(), <span class='kw-2'>&amp;</span><span class='ident'>valid_peer_id</span>())
         .<span class='ident'>unwrap</span>();
         
         <span class='comment'>// In closure, just check to make sure our peer id was checked</span>
-        <span class='ident'>Handshake</span>::<span class='ident'>verify_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_slice</span>(), <span class='ident'>different_len_protocol</span>.<span class='ident'>as_bytes</span>(),
-            <span class='ident'>VALID_INFO_HASH_ONE</span>, <span class='op'>|</span><span class='kw-2'>&amp;</span>: _<span class='op'>|</span> <span class='boolval'>true</span> )
+        <span class='ident'>Handshake</span>::<span class='ident'>verify_handshake</span>(<span class='ident'>buffer</span>.<span class='ident'>as_slice</span>(), <span class='ident'>different_len_protocol</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>valid_info_hash_one</span>(), <span class='op'>|</span><span class='kw-2'>&amp;</span>: _<span class='op'>|</span> <span class='boolval'>true</span> )
         .<span class='ident'>unwrap</span>();
     }
 }

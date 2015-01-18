@@ -44,7 +44,7 @@
 <h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>bittorrent</a>::<wbr><a href='index.html'>peer</a>::<wbr><a class='struct' href=''>Peer</a><wbr><a class='stability Unstable' title=''>Unstable</a></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-5352' href='../../src/bittorrent/peer/mod.rs.html#35-41'>[src]</a></span></h1>
+        </span><a id='src-5440' href='../../src/bittorrent/peer/mod.rs.html#36-42'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Peer {
     // some fields omitted
 }</pre><div class='docblock'><p>A Peer object representing a connection to a remote peer as well as the
@@ -55,7 +55,7 @@ choked and not interested.</p>
 <div class='docblock'><p>Returns the state associated with our end of the connection.</p>
 </div><h4 id='method.remote_state' class='method'><a class='stability Unstable' title='Unstable'></a><code>fn <a href='#method.remote_state' class='fnname'>remote_state</a>(&amp;self) -&gt; <a class='struct' href='../../bittorrent/peer/struct.PeerState.html' title='bittorrent::peer::PeerState'>PeerState</a></code></h4>
 <div class='docblock'><p>Returns the state associated with the remote end of the connection.</p>
-</div><h4 id='method.remote_peer_id' class='method'><a class='stability Unstable' title='Unstable'></a><code>fn <a href='#method.remote_peer_id' class='fnname'>remote_peer_id</a>(&amp;self) -&gt; &amp;<a class='type' href='../../bittorrent/util/type.SPeerID.html' title='bittorrent::util::SPeerID'>SPeerID</a></code></h4>
+</div><h4 id='method.remote_peer_id' class='method'><a class='stability Unstable' title='Unstable'></a><code>fn <a href='#method.remote_peer_id' class='fnname'>remote_peer_id</a>(&amp;self) -&gt; &amp;<a class='struct' href='../../bittorrent/types/struct.PeerID.html' title='bittorrent::types::PeerID'>PeerID</a></code></h4>
 <div class='docblock'><p>Returns a reference to a buffer containing the peer id of the remote peer.</p>
 </div><h4 id='method.process_messages' class='method'><a class='stability Unstable' title='Unstable'></a><code>fn <a href='#method.process_messages' class='fnname'>process_messages</a>&lt;'a, T&gt;(&amp;mut self, messages: <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;mut [</a><a class='enum' href='../../bittorrent/peer/message/enum.PeerMessage.html' title='bittorrent::peer::message::PeerMessage'>PeerMessage</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>, block: &amp;mut T) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/std/io/type.IoResult.html' title='std::io::IoResult'>IoResult</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt; <span class='where'>where T: <a class='trait' href='http://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a class='type' href='../../bittorrent/peer/message/type.BlockLength.html' title='bittorrent::peer::message::BlockLength'>BlockLength</a>,)</a>, &amp;'a mut <a class='struct' href='../../bittorrent/peer/block/struct.Block.html' title='bittorrent::peer::block::Block'>Block</a>&gt;</span></code></h4>
 <div class='docblock'><p>Processes all of the messages sent to us from the remote peer.</p>
