@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Bencode","Structure representing bencoded data."],["BencodedKind","Underlying type reference for the current Bencoded object."]],"trait":[["Bencoded","Trait for traversing a bencoded object."]]});
