@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["bencode","Bencode parsing and validation."]]});
+initSidebarItems({"mod":[["bencode","Bencode parsing and validation."],["error",""],["torrent","Torrent file parsing and validation."]]});

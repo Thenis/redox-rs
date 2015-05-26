@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["LazyMetainfo","Torrent parser that parses values on each access."],["Metainfo","Torrent parser that parses all values during creation."]]});

@@ -498,14 +498,16 @@
 <span id="456">456</span>
 <span id="457">457</span>
 <span id="458">458</span>
+<span id="459">459</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::{<span class='ident'>HashMap</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>hash_map</span>::{<span class='ident'>Entry</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>convert</span>::{<span class='ident'>AsRef</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::{<span class='ident'>Read</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>iter</span>::{<span class='ident'>Peekable</span>};
 
-<span class='kw'>use</span> <span class='ident'>bencode</span>::{<span class='self'>self</span>, <span class='ident'>BencodeView</span>, <span class='ident'>BencodeKind</span>, <span class='ident'>FromBencode</span>};
-<span class='kw'>use</span> <span class='ident'>bencode</span>::<span class='ident'>error</span>::{<span class='ident'>BencodeError</span>, <span class='ident'>BencodeErrorKind</span>, <span class='ident'>BencodeResult</span>};
+<span class='kw'>use</span> <span class='ident'>bencode</span>::{<span class='self'>self</span>, <span class='ident'>BencodeView</span>, <span class='ident'>BencodeKind</span>, <span class='ident'>DecodeBencode</span>};
+<span class='kw'>use</span> <span class='ident'>error</span>::{<span class='ident'>BencodeError</span>, <span class='ident'>BencodeErrorKind</span>, <span class='ident'>BencodeResult</span>};
 <span class='kw'>use</span> <span class='ident'>util</span>::{<span class='ident'>Dictionary</span>};
 
 <span class='doccomment'>/// Standard implementation of an object implementing BencodeView.</span>
@@ -525,9 +527,9 @@
     <span class='ident'>Dict</span>(<span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>String</span>, <span class='ident'>Bencode</span><span class='op'>&gt;</span>)
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> <span class='ident'>FromBencode</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]<span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>Bencode</span> {
-    <span class='kw'>fn</span> <span class='ident'>from_bencode</span>(<span class='ident'>bytes</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> [<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='ident'>BencodeResult</span><span class='op'>&lt;</span><span class='ident'>Bencode</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>bytes_iter</span> <span class='op'>=</span> <span class='ident'>bytes</span>.<span class='ident'>iter</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>n</span><span class='op'>|</span> <span class='ident'>n</span>).<span class='ident'>enumerate</span>().<span class='ident'>peekable</span>();
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>DecodeBencode</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>Bencode</span> <span class='kw'>where</span> <span class='ident'>T</span>: <span class='ident'>AsRef</span><span class='op'>&lt;</span>[<span class='ident'>u8</span>]<span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>decode</span>(<span class='ident'>bytes</span>: <span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='ident'>BencodeResult</span><span class='op'>&lt;</span><span class='ident'>Bencode</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>bytes_iter</span> <span class='op'>=</span> <span class='ident'>bytes</span>.<span class='ident'>as_ref</span>().<span class='ident'>iter</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>n</span><span class='op'>|</span> <span class='ident'>n</span>).<span class='ident'>enumerate</span>().<span class='ident'>peekable</span>();
 
         <span class='comment'>// Apply try so any errors return before the eof check</span>
         <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>decode</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>bytes_iter</span>));
@@ -735,7 +737,7 @@
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
     <span class='kw'>use</span> <span class='ident'>super</span>::{<span class='ident'>Bencode</span>};
-    <span class='kw'>use</span> <span class='ident'>bencode</span>::{<span class='self'>self</span>, <span class='ident'>BencodeView</span>, <span class='ident'>FromBencode</span>};
+    <span class='kw'>use</span> <span class='ident'>bencode</span>::{<span class='self'>self</span>, <span class='ident'>BencodeView</span>, <span class='ident'>DecodeBencode</span>};
 
     <span class='comment'>// Positive Cases</span>
     <span class='kw'>const</span> <span class='ident'>GENERAL</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> [<span class='ident'>u8</span>] <span class='op'>=</span> <span class='string'>b&quot;d0:12:zero_len_key8:location17:udp://test.com:8011:nested dictd4:listli-500500eee6:numberi500500ee&quot;</span>;
@@ -763,7 +765,7 @@
    
    <span class='attribute'>#[<span class='ident'>test</span>]</span>
    <span class='kw'>fn</span> <span class='ident'>positive_decode_general</span>() {
-        <span class='kw'>let</span> <span class='ident'>bencode</span> <span class='op'>=</span> <span class='ident'>Bencode</span>::<span class='ident'>from_bencode</span>(<span class='ident'>GENERAL</span>).<span class='ident'>unwrap</span>();
+        <span class='kw'>let</span> <span class='ident'>bencode</span> <span class='op'>=</span> <span class='ident'>Bencode</span>::<span class='ident'>decode</span>(<span class='ident'>GENERAL</span>).<span class='ident'>unwrap</span>();
         
         <span class='kw'>let</span> <span class='ident'>ben_dict</span> <span class='op'>=</span> <span class='ident'>bencode</span>.<span class='ident'>dict</span>().<span class='ident'>unwrap</span>();
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>ben_dict</span>.<span class='ident'>lookup</span>(<span class='string'>&quot;&quot;</span>).<span class='ident'>unwrap</span>().<span class='ident'>str</span>().<span class='ident'>unwrap</span>(), <span class='string'>&quot;zero_len_key&quot;</span>);
@@ -777,7 +779,7 @@
     
    <span class='attribute'>#[<span class='ident'>test</span>]</span>
    <span class='kw'>fn</span> <span class='ident'>positive_decode_bytes_utf8</span>() {
-        <span class='kw'>let</span> <span class='ident'>bencode</span> <span class='op'>=</span> <span class='ident'>Bencode</span>::<span class='ident'>from_bencode</span>(<span class='ident'>BYTES_UTF8</span>).<span class='ident'>unwrap</span>();
+        <span class='kw'>let</span> <span class='ident'>bencode</span> <span class='op'>=</span> <span class='ident'>Bencode</span>::<span class='ident'>decode</span>(<span class='ident'>BYTES_UTF8</span>).<span class='ident'>unwrap</span>();
         
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>bencode</span>.<span class='ident'>str</span>().<span class='ident'>unwrap</span>(), <span class='string'>&quot;valid_utf8_bytes&quot;</span>);
    }
@@ -868,19 +870,19 @@
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>negative_decode_bytes_neg_len</span>() {
-        <span class='ident'>Bencode</span>::<span class='ident'>from_bencode</span>(<span class='ident'>BYTES_NEG_LEN</span>).<span class='ident'>unwrap</span>();
+        <span class='ident'>Bencode</span>::<span class='ident'>decode</span>(<span class='ident'>BYTES_NEG_LEN</span>).<span class='ident'>unwrap</span>();
     }
     
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>negative_decode_bytes_extra</span>() {
-        <span class='ident'>Bencode</span>::<span class='ident'>from_bencode</span>(<span class='ident'>BYTES_EXTRA</span>).<span class='ident'>unwrap</span>();
+        <span class='ident'>Bencode</span>::<span class='ident'>decode</span>(<span class='ident'>BYTES_EXTRA</span>).<span class='ident'>unwrap</span>();
     }
     
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='attribute'>#[<span class='ident'>should_panic</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>negative_decode_bytes_not_utf8</span>() {
-        <span class='kw'>let</span> <span class='ident'>bencode</span> <span class='op'>=</span> <span class='ident'>Bencode</span>::<span class='ident'>from_bencode</span>(<span class='ident'>BYTES_NOT_UTF8</span>).<span class='ident'>unwrap</span>();
+        <span class='kw'>let</span> <span class='ident'>bencode</span> <span class='op'>=</span> <span class='ident'>Bencode</span>::<span class='ident'>decode</span>(<span class='ident'>BYTES_NOT_UTF8</span>).<span class='ident'>unwrap</span>();
         
         <span class='ident'>bencode</span>.<span class='ident'>str</span>().<span class='ident'>unwrap</span>();
     }
