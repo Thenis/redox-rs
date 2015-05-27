@@ -49,7 +49,7 @@
 <pre class='rust enum'>pub enum BencodeKind&lt;'a, T&gt; <span class='where'>where T: <a class='trait' href='../../redox/bencode/trait.BencodeView.html' title='redox::bencode::BencodeView'>BencodeView</a> + 'a</span> {
     Int(<a href='http://doc.rust-lang.org/nightly/std/primitive.i64.html'>i64</a>),
     Bytes(<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [</a><a href='http://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>),
-    List(<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [T]</a>),
+    List(<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [</a>T<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>),
     Dict(&amp;'a Dictionary&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>, T&gt;),
 }</pre><div class='docblock'><p>Represents an abstraction into the contents of a BencodeView.</p>
 </div><h2 class='variants'>Variants</h2>
