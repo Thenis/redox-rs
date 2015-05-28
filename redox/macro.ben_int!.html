@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `sample` fn in crate `rand`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, sample">
+    <meta name="description" content="API documentation for the Rust `ben_int!` macro in crate `redox`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ben_int!">
 
-    <title>rand::sample - Rust</title>
+    <title>redox::ben_int! - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../main.css">
 
-    <link rel="shortcut icon" href="http://www.rust-lang.org/favicon.ico">
+    
     
 </head>
 <body class="rustdoc">
@@ -25,8 +25,8 @@
     
 
     <section class="sidebar">
-        <a href='../rand/index.html'><img src='http://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='' width='100'></a>
-        <p class='location'><a href='index.html'>rand</a></p><script>window.sidebarCurrent = {name: 'sample', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        
+        <p class='location'><a href='index.html'>redox</a></p><script>window.sidebarCurrent = {name: 'ben_int!', ty: 'macro', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </section>
 
     <nav class="sub">
@@ -40,22 +40,24 @@
         </form>
     </nav>
 
-    <section id='main' class="content fn">
-<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>rand</a>::<wbr><a class='fn' href=''>sample</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content macro">
+<h1 class='fqn'><span class='in-band'><a href='index.html'>redox</a>::<wbr><a class='macro' href=''>ben_int!</a></span><span class='out-of-band'><span id='render-detail'>
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-14493' class='srclink' href='../src/rand/lib.rs.html#891-902' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn sample&lt;T, I: <a class='trait' href='http://doc.rust-lang.org/nightly/core/iter/trait.Iterator.html' title='core::iter::Iterator'>Iterator</a>&lt;Item=T&gt;, R: <a class='trait' href='../rand/trait.Rng.html' title='rand::Rng'>Rng</a>&gt;(rng: &amp;mut R, iter: I, amount: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;T&gt;</pre><div class='docblock'><p>Randomly sample up to <code>amount</code> elements from an iterator.</p>
-
-<h1 id="example" class='section-header'><a
-                           href="#example">Example</a></h1><pre id='rust-example-rendered' class='rust '>
-<span class='kw'>use</span> <span class='ident'>rand</span>::{<span class='ident'>thread_rng</span>, <span class='ident'>sample</span>};
-
-<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rng</span> <span class='op'>=</span> <span class='ident'>thread_rng</span>();
-<span class='kw'>let</span> <span class='ident'>sample</span> <span class='op'>=</span> <span class='ident'>sample</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>rng</span>, <span class='number'>1</span>..<span class='number'>100</span>, <span class='number'>5</span>);
-<span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{:?}&quot;</span>, <span class='ident'>sample</span>);
+        </span><a id='src-8711' class='srclink' href='../src/redox/bencode/mod.rs.html#183-191' title='goto source code'>[src]</a></span></h1>
+<pre class='rust macro'>
+<span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>ben_int</span> {
+        ( <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>ben</span>:<span class='ident'>expr</span> ) <span class='op'>=&gt;</span> {
+            {
+                <span class='kw'>use</span> <span class='ident'>redox</span>::<span class='ident'>bencode</span>::{<span class='ident'>Bencode</span>};
+                
+                <span class='ident'>Bencode</span>::<span class='ident'>Int</span>(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>ben</span>)
+            }
+        }
+    }
 </pre>
+<div class='docblock'><p>Construct a Bencode integer by supplying an i64.</p>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -100,7 +102,7 @@
 
     <script>
         window.rootPath = "../";
-        window.currentCrate = "rand";
+        window.currentCrate = "redox";
         window.playgroundUrl = "";
     </script>
     <script src="../jquery.js"></script>
