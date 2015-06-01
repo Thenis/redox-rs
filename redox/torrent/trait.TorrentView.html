@@ -45,7 +45,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-7675' class='srclink' href='../../src/redox/torrent/mod.rs.html#48-69' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-7674' class='srclink' href='../../src/redox/torrent/mod.rs.html#46-67' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait TorrentView {
     fn <a href='#tymethod.contact' class='fnname'>contact</a>&lt;'a&gt;(&amp;'a self) -&gt; <a class='enum' href='../../redox/torrent/enum.ContactType.html' title='redox::torrent::ContactType'>ContactType</a>&lt;'a&gt;;
     fn <a href='#tymethod.comment' class='fnname'>comment</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;;
@@ -53,7 +53,7 @@
     fn <a href='#tymethod.creation_date' class='fnname'>creation_date</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.i64.html'>i64</a>&gt;;
     fn <a href='#tymethod.piece_info' class='fnname'>piece_info</a>&lt;'a&gt;(&amp;'a self) -&gt; <a class='struct' href='../../redox/torrent/struct.PieceInfo.html' title='redox::torrent::PieceInfo'>PieceInfo</a>&lt;'a&gt;;
     fn <a href='#tymethod.file_info' class='fnname'>file_info</a>&lt;'a&gt;(&amp;'a self) -&gt; <a class='struct' href='../../redox/torrent/struct.FileInfo.html' title='redox::torrent::FileInfo'>FileInfo</a>&lt;'a&gt;;
-    fn <a href='#tymethod.info_hash' class='fnname'>info_hash</a>(&amp;self) -&gt; <a class='type' href='../../redox/torrent/type.InfoHash.html' title='redox::torrent::InfoHash'>InfoHash</a>;
+    fn <a href='#tymethod.info_hash' class='fnname'>info_hash</a>(&amp;self) -&gt; <a class='struct' href='../../redox/struct.InfoHash.html' title='redox::InfoHash'>InfoHash</a>;
 }</pre><div class='docblock'><p>Trait for accessing information wtihin a torrent file.</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
@@ -64,7 +64,7 @@
 </div><h3 id='tymethod.creation_date' class='method stab '><code>fn <a href='#tymethod.creation_date' class='fnname'>creation_date</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.i64.html'>i64</a>&gt;</code></h3><div class='docblock'><p>Creation date of the current torrent file in UNIX epoch format.</p>
 </div><h3 id='tymethod.piece_info' class='method stab '><code>fn <a href='#tymethod.piece_info' class='fnname'>piece_info</a>&lt;'a&gt;(&amp;'a self) -&gt; <a class='struct' href='../../redox/torrent/struct.PieceInfo.html' title='redox::torrent::PieceInfo'>PieceInfo</a>&lt;'a&gt;</code></h3><div class='docblock'><p>Piece information for the torrent file.</p>
 </div><h3 id='tymethod.file_info' class='method stab '><code>fn <a href='#tymethod.file_info' class='fnname'>file_info</a>&lt;'a&gt;(&amp;'a self) -&gt; <a class='struct' href='../../redox/torrent/struct.FileInfo.html' title='redox::torrent::FileInfo'>FileInfo</a>&lt;'a&gt;</code></h3><div class='docblock'><p>Iterator over each file within the torrent file.</p>
-</div><h3 id='tymethod.info_hash' class='method stab '><code>fn <a href='#tymethod.info_hash' class='fnname'>info_hash</a>(&amp;self) -&gt; <a class='type' href='../../redox/torrent/type.InfoHash.html' title='redox::torrent::InfoHash'>InfoHash</a></code></h3><div class='docblock'><p>SHA-1 hash of the bencoded Info dictionary.</p>
+</div><h3 id='tymethod.info_hash' class='method stab '><code>fn <a href='#tymethod.info_hash' class='fnname'>info_hash</a>(&amp;self) -&gt; <a class='struct' href='../../redox/struct.InfoHash.html' title='redox::InfoHash'>InfoHash</a></code></h3><div class='docblock'><p>SHA-1 hash of the bencoded Info dictionary.</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>

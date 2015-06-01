@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["INFO_HASH_LEN","Length in bytes of an info hash."]],"struct":[["InfoHash","Hash of the info dictionary within a torrent file."]]});

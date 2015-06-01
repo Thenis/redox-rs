@@ -51,6 +51,10 @@
 <span id="9"> 9</span>
 <span id="10">10</span>
 <span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! # Rust Bittorrent Library</span>
 
@@ -62,7 +66,11 @@
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>bencode</span>;
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>error</span>;
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>torrent</span>;
+
+<span class='kw'>mod</span> <span class='ident'>info_hash</span>;
 <span class='kw'>mod</span> <span class='ident'>util</span>;
+
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>info_hash</span>::{<span class='ident'>InfoHash</span>, <span class='ident'>INFO_HASH_LEN</span>};
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

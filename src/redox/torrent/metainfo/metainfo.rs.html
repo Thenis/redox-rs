@@ -478,6 +478,7 @@
 <span id="436">436</span>
 <span id="437">437</span>
 <span id="438">438</span>
+<span id="439">439</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Read a Torrent from a file or some bytes.</span>
 
@@ -487,7 +488,8 @@
 
 <span class='kw'>use</span> <span class='ident'>bencode</span>::{<span class='ident'>Bencode</span>, <span class='ident'>DecodeBencode</span>};
 <span class='kw'>use</span> <span class='ident'>error</span>::{<span class='ident'>TorrentError</span>, <span class='ident'>TorrentResult</span>, <span class='ident'>TorrentErrorKind</span>};
-<span class='kw'>use</span> <span class='ident'>torrent</span>::{<span class='ident'>TorrentView</span>, <span class='ident'>ContactType</span>, <span class='ident'>InfoHash</span>, <span class='ident'>PieceInfo</span>, <span class='ident'>Files</span>, <span class='ident'>Nodes</span>,
+<span class='kw'>use</span> <span class='ident'>info_hash</span>::{<span class='ident'>InfoHash</span>};
+<span class='kw'>use</span> <span class='ident'>torrent</span>::{<span class='ident'>TorrentView</span>, <span class='ident'>ContactType</span>, <span class='ident'>PieceInfo</span>, <span class='ident'>Files</span>, <span class='ident'>Nodes</span>,
               <span class='ident'>FileInfo</span>, <span class='ident'>File</span>, <span class='ident'>FilePath</span>};
 <span class='kw'>use</span> <span class='ident'>torrent</span>::<span class='ident'>metainfo</span>::{<span class='self'>self</span>};
 <span class='kw'>use</span> <span class='ident'>util</span>::{<span class='ident'>Dictionary</span>, <span class='ident'>Iter</span>};
