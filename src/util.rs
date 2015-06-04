@@ -3,6 +3,9 @@
 use std::borrow::{Borrow};
 use std::collections::{HashMap, BTreeMap};
 use std::hash::{Hash};
+use std::net::{SocketAddr, Ipv4Addr, SocketAddrV4};
+use std::thread::{self};
+use std::sync::mpsc::{self, Receiver, Sender};
 
 use rand;
 use sha1::{Sha1};
@@ -94,6 +97,24 @@ impl<K, V> Dictionary<K, V> for BTreeMap<K, V> where K: Ord + Borrow<str> {
     fn remove(&mut self, key: &str) -> Option<V> {
         self.remove(key)
     }
+}
+
+/// Get the default route IPv4 socket.
+pub fn default_route_v4() -> SocketAddr {
+    let v4_addr = Ipv4Addr::new(0, 0, 0, 0);
+    let v4_sock = SocketAddrV4::new(v4_addr, 0);
+    
+    SocketAddr::V4(v4_sock)
+}
+
+/// Spawn two threads linked together by a channel.
+pub fn spawn_threads<S, R, T>(mut send_thread: S, mut recv_thread: R)
+    where S: FnMut(Sender<T>) + Send + 'static,
+          R: FnMut(Receiver<T>) + Send + 'static, T: Send + 'static {
+    let (tx, rx) = mpsc::channel();
+    
+    thread::spawn(move || send_thread(tx));
+    thread::spawn(move || recv_thread(rx));
 }
 
 /// Applies a sha1 hash to the src and outputs it in dst.

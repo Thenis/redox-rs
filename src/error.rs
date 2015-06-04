@@ -72,7 +72,7 @@ pub enum TorrentErrorKind {
     MissingKey,
     /// A Value Was Found That Has The Wrong Type.
     WrongType,
-    /// Some Other Error Occured.
+    /// Some Other Error Occurred.
     Other
 }
 
@@ -140,6 +140,90 @@ impl From<BencodeError> for TorrentError {
 }
 
 impl Error for TorrentError {
+    fn description(&self) -> &str { self.desc }
+    
+    fn cause(&self) -> Option<&Error> { None }
+}
+
+//----------------------------------------------------------------------------//
+
+pub type DhtResult<T> = Result<T, DhtError>;
+
+/// A list specifying the types of DhtErrors that may occur.
+#[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
+    pub enum DhtErrorKind {
+    /// Routing Table Has Gone Stale And Failed To Bootstrap.
+    BadRoutingTable,
+    /// Failed To Provide A Means Of Contact During Creation.
+    NoBootstrap,
+    /// Some Other Error Occurred.
+    Other
+}
+
+/// A type for specifying errors when reading a torrent file.
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
+pub struct DhtError {
+    kind: DhtErrorKind,
+    desc: &'static str,
+    detail: Option<Cow<'static, str>>
+}
+
+impl DhtError {
+    pub fn new(kind: DhtErrorKind, desc: &'static str) -> DhtError {
+        DhtError{ kind: kind, desc: desc, detail: None }
+    }
+    
+    pub fn with_detail<T>(kind: DhtErrorKind, desc: &'static str, detail: T)
+        -> DhtError where T: Into<Cow<'static, str>> {
+        DhtError{ kind: kind, desc: desc, detail: Some(detail.into()) }
+    }
+    
+    pub fn kind(&self) -> DhtErrorKind {
+        self.kind
+    }
+    
+    pub fn detail(&self) -> Option<&str> {
+        self.detail.as_ref().map(|x| &**x)
+    }
+}
+
+impl Display for DhtError {
+    fn fmt(&self, f: &mut Formatter) -> Result<(), fmt::Error> {
+        try!(f.write_str("Kind: "));
+        try!(Debug::fmt(&self.kind, f));
+        
+        try!(f.write_str(" Description: "));
+        try!(f.write_str(self.desc));
+        
+        try!(f.write_str(" Detail: "));
+        match self.detail {
+            Some(ref n) => try!(f.write_str(n)),
+            None        => ()
+        };
+        
+        Ok(())
+    }   
+}
+
+impl From<io::Error> for DhtError {
+    fn from(error: io::Error) -> DhtError {
+        DhtError::with_detail(DhtErrorKind::Other,
+            "An io::Error Occurred, See detail",
+            error.description().to_owned()
+        )
+    }
+}
+
+impl From<BencodeError> for DhtError {
+    fn from(error: BencodeError) -> DhtError {
+        DhtError::with_detail(DhtErrorKind::Other,
+            "A BencodeError Occurred, See detail",
+            error.to_string()
+        )
+    }
+}
+
+impl Error for DhtError {
     fn description(&self) -> &str { self.desc }
     
     fn cause(&self) -> Option<&Error> { None }

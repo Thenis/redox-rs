@@ -4,7 +4,6 @@ use std::io::{self};
 use std::net::{SocketAddr};
 
 //pub mod udp;
-pub mod dht;
 /// Information pertaining to the swarm we are in.
 pub struct AnnounceInfo {
     /// Number of leechers in the swarm.
