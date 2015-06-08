@@ -6,11 +6,11 @@ use std::path::{Path};
 
 use bencode::{Bencode, DecodeBencode};
 use error::{TorrentError, TorrentResult, TorrentErrorKind};
-use info_hash::{InfoHash};
 use torrent::{TorrentView, ContactType, PieceInfo, Files, Nodes,
-              FileInfo, File, FilePath};
+              FileInfo, File, FilePath, InfoHash};
 use torrent::metainfo::{self};
-use util::{Dictionary, Iter};
+use util::{Dictionary};
+use util::single_iter::{Iter};
 
 /// Specialized contact for values which may involve owned storage.
 ///

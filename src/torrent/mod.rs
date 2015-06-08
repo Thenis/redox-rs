@@ -1,6 +1,6 @@
 //! Torrent file parsing and validation.
 
-use info_hash::{InfoHash};
+use hash::{ShaHash};
 
 //pub mod extension;
 pub mod metainfo;
@@ -12,6 +12,9 @@ pub type Node<'a> = (&'a str, u16);
 
 /// Main tracker specified in a torrent file.
 pub type MainTracker<'a> = &'a str;
+
+/// Infohash used to identify a torrent file.
+pub type InfoHash = ShaHash;
 
 //----------------------------------------------------------------------------//
 

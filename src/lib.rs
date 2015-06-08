@@ -10,7 +10,7 @@ pub mod dht;
 pub mod error;
 pub mod torrent;
 
-mod info_hash;
+mod hash;
 mod util;
 
-pub use self::info_hash::{InfoHash, INFO_HASH_LEN};
+pub use self::hash::{ShaHash, SHA_HASH_LEN, Bits, BitCmp};

@@ -3,12 +3,18 @@
 use std::fmt::{self, Display, Formatter};
 use std::io::{self, Error, ErrorKind};
 use std::net::{SocketAddr, ToSocketAddrs};
+use std::sync::{Arc, RwLock};
+
+use dht::node::{NodeId};
+use error::{DhtResult, DhtError};
+use hash::{ShaHash};
 
 const UTORRENT_DHT:     &'static str = "router.utorrent.com:6881";
 const BITCOMET_DHT:     &'static str = "router.bitcomet.com:6881";
 const TRANSMISSION_DHT: &'static str = "dht.transmissionbt.com:6881";
 
 mod builder;
+mod node;
 mod dht;
 
 pub use self::builder::{DhtBuilder};
@@ -60,4 +66,29 @@ impl Display for Router {
             Router::Custom(n)    => Display::fmt(&n, f)
         }
     }
+}
+
+
+
+/// Maintains a distributed routing table.
+pub struct Dht {
+    routing: Arc<RwLock<()>>,
+    node_id: NodeId
+}
+
+impl Dht {
+    /// Create a new Dht object with the settings specified in the DhtBuilder.
+    pub fn with_builder(builder: DhtBuilder) -> DhtResult<Dht> {
+        unimplemented!()
+    }
+    
+    /// Perform a search into the Dht for nodes that have announced the given
+    /// InfoHash.
+    pub fn search(hash: InfoHash) -> DhtResult<PeerStream>;
+    
+    /// Perform a search into the Dht for nodes that have announced the given
+    /// InfoHash. The contact information for our peer is then inserted into
+    /// the Dht nodes so that other peers may find us.
+    pub fn search_announce<C>(hash: InfoHash, contact: C) -> DhtResult<PeerStream>
+        where C: PacketStream;
 }

@@ -2,6 +2,7 @@ use std::collections::{HashSet};
 use std::net::{SocketAddr};
 
 use dht::{Dht, Router};
+use error::{DhtResult};
 use torrent::{Node};
 use util::{self};
 
@@ -30,7 +31,7 @@ impl DhtBuilder {
 
     /// Creates a DhtBuilder with initial nodes which will be distributed within]
     /// our routing table.
-    pub fn with_nodes<I>(mut self, nodes: I) -> DhtBuilder
+    pub fn with_nodes<I>(nodes: I) -> DhtBuilder
         where I: Iterator<Item=SocketAddr> {
         let mut dht = DhtBuilder::new();
         
@@ -42,7 +43,7 @@ impl DhtBuilder {
     ///
     /// Difference between a node and a router is that a router is never put in
     /// our routing table.
-    pub fn with_router(mut self, router: Router) -> DhtBuilder {
+    pub fn with_router(router: Router) -> DhtBuilder {
         let mut dht = DhtBuilder::new();
         
         dht.add_router(router)
@@ -99,7 +100,7 @@ impl DhtBuilder {
     }
     
     /// Start the dht with the current configuration.
-    pub fn start(mut self) -> Dht {
+    pub fn start(mut self) -> DhtResult<Dht> {
         Dht::with_builder(self)
     }
 }

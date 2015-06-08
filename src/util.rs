@@ -12,27 +12,58 @@ use sha1::{Sha1};
 
 pub const SHA1_HASH_LEN: usize = 20;
 
-pub struct Iter<'a, T: 'a + ?Sized> {
-    item: &'a T,
-    yielded: bool
-}
-
-impl<'a, T: 'a + ?Sized> Iter<'a, T> {
-    pub fn new(item: &'a T) -> Iter<'a, T> {
-        Iter{ item: item, yielded: false }
+// Iterator over a reference to a single value.
+pub mod single_iter {
+    pub struct Iter<'a, T: 'a + ?Sized> {
+        item: &'a T,
+        yielded: bool
+    }
+    
+    impl<'a, T: 'a + ?Sized> Iter<'a, T> {
+        pub fn new(item: &'a T) -> Iter<'a, T> {
+            Iter{ item: item, yielded: false }
+        }
+    }
+    
+    impl<'a, T: 'a + ?Sized> Iterator for Iter<'a, T> {
+        type Item = &'a T;
+        
+        fn next(&mut self) -> Option<&'a T> {
+            if !self.yielded {
+                self.yielded = true;
+                
+                Some(self.item)
+            } else {
+                None
+            }
+        }
     }
 }
 
-impl<'a, T: 'a + ?Sized> Iterator for Iter<'a, T> {
-    type Item = &'a T;
+// Iterator over a reference to many values.
+pub mod multi_iter {
+    pub struct Iter<'a, T: 'a> {
+        items: &'a [T],
+        index: usize
+    }
     
-    fn next(&mut self) -> Option<&'a T> {
-        if !self.yielded {
-            self.yielded = true;
-            
-            Some(self.item)
-        } else {
-            None
+    impl<'a, T: 'a> Iter<'a, T> {
+        pub fn new(items: &'a [T]) -> Iter<'a, T> {
+            Iter{ items: items, index: 0 }
+        }
+    }
+    
+    impl<'a, T: 'a> Iterator for Iter<'a, T> {
+        type Item = &'a T;
+        
+        fn next(&mut self) -> Option<&'a T> {
+            if self.index < self.items.len() {
+                self.index += 1;
+                
+                Some(&self.items[self.index - 1])
+            } else {
+                None
+            }
         }
     }
 }
