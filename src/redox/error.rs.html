@@ -186,13 +186,18 @@
 <span id="144">144</span>
 <span id="145">145</span>
 <span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Error types used in the library.</span>
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>borrow</span>::{<span class='ident'>Cow</span>, <span class='ident'>ToOwned</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>convert</span>::{<span class='ident'>From</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>error</span>::{<span class='ident'>Error</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Display</span>, <span class='ident'>Formatter</span>, <span class='ident'>Debug</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Display</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::{<span class='self'>self</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>result</span>::{<span class='prelude-ty'>Result</span>};
 
@@ -204,8 +209,6 @@
     <span class='doccomment'>/// An Incomplete Number Of Bytes.</span>
     <span class='ident'>BytesEmpty</span>,
     <span class='doccomment'>/// An Invalid Byte Was Found.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Position Of Invalid Byte Has Been Provided.</span>
     <span class='ident'>InvalidByte</span>,
     <span class='doccomment'>/// An Invalid Integer Was Found.</span>
     <span class='ident'>InvalidInt</span>,
@@ -218,15 +221,26 @@
 <span class='doccomment'>/// A type for specifying errors when decoding Bencoded data.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Eq</span>, <span class='ident'>Hash</span>, <span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>BencodeError</span> {
-    <span class='kw'>pub</span> <span class='ident'>kind</span>: <span class='ident'>BencodeErrorKind</span>,
-    <span class='kw'>pub</span> <span class='ident'>desc</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>,
-    <span class='kw'>pub</span> <span class='ident'>pos</span>:  <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>
+    <span class='ident'>kind</span>: <span class='ident'>BencodeErrorKind</span>,
+    <span class='ident'>desc</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>,
+    <span class='ident'>pos</span>:  <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>
 }
 
 <span class='kw'>impl</span> <span class='ident'>BencodeError</span> {
-    <span class='doccomment'>/// Construct a new BencodeError.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>kind</span>: <span class='ident'>BencodeErrorKind</span>, <span class='ident'>desc</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>, <span class='ident'>pos</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>BencodeError</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>kind</span>: <span class='ident'>BencodeErrorKind</span>, <span class='ident'>desc</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>BencodeError</span> {
+        <span class='ident'>BencodeError</span>::<span class='ident'>with_pos</span>(<span class='ident'>kind</span>, <span class='ident'>desc</span>, <span class='prelude-val'>None</span>)
+    }
+    
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>with_pos</span>(<span class='ident'>kind</span>: <span class='ident'>BencodeErrorKind</span>, <span class='ident'>desc</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span>, <span class='ident'>pos</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>BencodeError</span> {
         <span class='ident'>BencodeError</span>{ <span class='ident'>kind</span>: <span class='ident'>kind</span>, <span class='ident'>desc</span>: <span class='ident'>desc</span>, <span class='ident'>pos</span>: <span class='ident'>pos</span> }
+    }
+    
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>kind</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>BencodeErrorKind</span> {
+        <span class='self'>self</span>.<span class='ident'>kind</span>
+    }
+    
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>position</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span> {
+        <span class='self'>self</span>.<span class='ident'>pos</span>
     }
 }
 
@@ -234,10 +248,10 @@
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>f</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>fmt</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>f</span>.<span class='ident'>write_fmt</span>(<span class='macro'>format_args</span><span class='macro'>!</span>(<span class='string'>&quot;Kind: {:?}&quot;</span>, <span class='self'>self</span>.<span class='ident'>kind</span>)));
         
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>f</span>.<span class='ident'>write_fmt</span>(<span class='macro'>format_args</span><span class='macro'>!</span>(<span class='string'>&quot; Description: {}&quot;</span>, <span class='self'>self</span>.<span class='ident'>desc</span>)));
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>f</span>.<span class='ident'>write_fmt</span>(<span class='macro'>format_args</span><span class='macro'>!</span>(<span class='string'>&quot;, Description: {}&quot;</span>, <span class='self'>self</span>.<span class='ident'>desc</span>)));
         
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>n</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>pos</span> {
-            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>f</span>.<span class='ident'>write_fmt</span>(<span class='macro'>format_args</span><span class='macro'>!</span>(<span class='string'>&quot;Position: {}&quot;</span>, <span class='ident'>n</span>)));
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>f</span>.<span class='ident'>write_fmt</span>(<span class='macro'>format_args</span><span class='macro'>!</span>(<span class='string'>&quot;, Position: {}&quot;</span>, <span class='ident'>n</span>)));
         }
 
         <span class='prelude-val'>Ok</span>(())
@@ -294,17 +308,13 @@
 
 <span class='kw'>impl</span> <span class='ident'>Display</span> <span class='kw'>for</span> <span class='ident'>TorrentError</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>f</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>fmt</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>f</span>.<span class='ident'>write_str</span>(<span class='string'>&quot;Kind: &quot;</span>));
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>Debug</span>::<span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>kind</span>, <span class='ident'>f</span>));
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>f</span>.<span class='ident'>write_fmt</span>(<span class='macro'>format_args</span><span class='macro'>!</span>(<span class='string'>&quot;Kind: {:?}&quot;</span>, <span class='self'>self</span>.<span class='ident'>kind</span>)));
         
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>f</span>.<span class='ident'>write_str</span>(<span class='string'>&quot; Description: &quot;</span>));
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>f</span>.<span class='ident'>write_str</span>(<span class='self'>self</span>.<span class='ident'>desc</span>));
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>f</span>.<span class='ident'>write_fmt</span>(<span class='macro'>format_args</span><span class='macro'>!</span>(<span class='string'>&quot;, Description: {}&quot;</span>, <span class='self'>self</span>.<span class='ident'>desc</span>)));
         
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>f</span>.<span class='ident'>write_str</span>(<span class='string'>&quot; Detail: &quot;</span>));
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>detail</span> {
-            <span class='prelude-val'>Some</span>(<span class='kw-2'>ref</span> <span class='ident'>n</span>) <span class='op'>=&gt;</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>f</span>.<span class='ident'>write_str</span>(<span class='ident'>n</span>)),
-            <span class='prelude-val'>None</span>        <span class='op'>=&gt;</span> ()
-        };
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>n</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>detail</span>.<span class='ident'>as_ref</span>() {
+            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>f</span>.<span class='ident'>write_fmt</span>(<span class='macro'>format_args</span><span class='macro'>!</span>(<span class='string'>&quot;, Detail: {}&quot;</span>, <span class='ident'>n</span>)));
+        }
         
         <span class='prelude-val'>Ok</span>(())
     }   

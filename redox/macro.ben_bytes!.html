@@ -45,15 +45,15 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-9172' class='srclink' href='../src/redox/bencode/mod.rs.html#170-179' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-9191' class='srclink' href='../src/redox/bencode/mod.rs.html#170-179' title='goto source code'>[src]</a></span></h1>
 <pre class='rust macro'>
 <span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>ben_bytes</span> {
         ( <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>ben</span>:<span class='ident'>expr</span> ) <span class='op'>=&gt;</span> {
             {
-                <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>convert</span>::{<span class='ident'>From</span>};
+                <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>convert</span>::{<span class='ident'>AsRef</span>};
                 <span class='kw'>use</span> <span class='ident'>redox</span>::<span class='ident'>bencode</span>::{<span class='ident'>Bencode</span>};
                 
-                <span class='ident'>Bencode</span>::<span class='ident'>Bytes</span>(<span class='ident'>Vec</span>::<span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>::<span class='ident'>from</span>(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>ben</span>))
+                <span class='ident'>Bencode</span>::<span class='ident'>Bytes</span>(<span class='ident'>AsRef</span>::<span class='ident'>as_ref</span>(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>ben</span>))
             }
         }
     }

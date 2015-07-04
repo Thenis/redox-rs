@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Bencode","Standard implementation of an object implementing BencodeView."]]});
+initSidebarItems({"enum":[["Bencode","Ahead of time parser for decoding bencode."]]});
